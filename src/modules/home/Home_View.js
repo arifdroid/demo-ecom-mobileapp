@@ -14,6 +14,7 @@ const image_nike = require('../../common/asset/sample-product/shoes_nike.jpg')
 const image_ramyeon = require('../../common/asset/sample-product/ramyeon.png')
 const image_lotion = require('../../common/asset/sample-product/Hydrating_Lotion.png')
 const image_kerepek_durian = require('../../common/asset/sample-product/kerepek_durian.png')
+const image_nike_2 = require('../../common/asset/sample-product/shoes_nike_2.jpg')
 
 const images = [
     image_1,
@@ -26,7 +27,12 @@ const sample_data = [
     { product_name: 'Maggi Ramyeon', product_description: 'korean noodles', product_color: 'Red', product_price: 19.40, product_tag: 'noodle', product_category: 'food', image: image_ramyeon },
     { product_name: 'Hada Labo Hydrating Lotion', product_description: 'hydrating lotion night and day', product_color: null, product_price: 22.00, product_tag: 'lotion', product_category: 'beauty', image: image_lotion },
     { product_name: 'Durian Crepe Krupp', product_description: 'kerepek halal made in malaysia', product_color: 'Yellow', product_price: 5.50, product_tag: 'snacks', product_category: 'food', image: image_kerepek_durian },
+    { product_name: 'Maggi Ramyeon', product_description: 'korean noodles', product_color: 'Red', product_price: 19.40, product_tag: 'noodle', product_category: 'food', image: image_ramyeon },
+    { product_name: 'Durian Crepe Krupp', product_description: 'kerepek halal made in malaysia', product_color: 'Yellow', product_price: 5.50, product_tag: 'snacks', product_category: 'food', image: image_kerepek_durian },
+    { product_name: 'Nike Shoes Special Edition', product_description: 'jordan air benchmark', product_color: 'White', product_price: 229.10, product_tag: 'men shoes', product_category: 'shoes', image: image_nike_2 },
+    { product_name: 'Hada Labo Hydrating Lotion', product_description: 'hydrating lotion night and day', product_color: null, product_price: 22.00, product_tag: 'lotion', product_category: 'beauty', image: image_lotion },
 ]
+
 
 const renderPage = (image, index) => {
     return (
@@ -36,7 +42,11 @@ const renderPage = (image, index) => {
     )
 }
 
-const Home_View = () => {
+const Home_View = ({navigation, route}) => {
+
+    const __clickProduct = ()=>{
+        navigation.navigate('ProductModules')
+    }
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
@@ -61,41 +71,10 @@ const Home_View = () => {
                         </Carousel>
                     </View>
 
-                    {/* <View style={{ alignSelf: 'center', margin: 20, flexDirection: 'row' }}>
-                        <Image source={require('../../../common/asset/home/popular.png')} resizeMode='contain' style={{ height: 17 }}></Image>
-                        <Text style={{ color: 'white', fontSize: 18 }}>Produk Sedang Trending</Text>
-                    </View> */}
-
-
-                    {/* <FlatList
-                        horizontal
-                        style={{ alignSelf: 'center', maxHeight: 40 }}
-                        data={hashtag}
-                        renderItem={({ item }) => {
-                            return (<TrendingData data={item} ></TrendingData>)
-                        }}
-                    ></FlatList> */}
-                    {/* <FlatList
-                        horizontal
-                        style={{ alignSelf: 'center', maxHeight: 40 }}
-                        data={hashtag_2}
-                        renderItem={({ item }) => {
-                            return (<TrendingData data={item} ></TrendingData>)
-                        }}
-                    ></FlatList> */}
-
-                    {/* <TrendingView></TrendingView> */}
-
-
-
-
-
-
-
 
                 </LinearGradient>
 
-
+{/* 
                 <CardView
                     style={{ margin: 10, height: 220 }}
                     cardElevation={2}
@@ -106,7 +85,7 @@ const Home_View = () => {
                          </Text>
                     <>
 
-                        {/* <Categories></Categories> */}
+                        <Categories></Categories>
 
 
                     </>
@@ -122,11 +101,11 @@ const Home_View = () => {
                          </Text>
                     <>
 
-                        {/* <HotSale></HotSale> */}
+                        <HotSale></HotSale>
 
 
                     </>
-                </CardView>
+                </CardView> */}
 
                 <FlatList
 
@@ -148,8 +127,10 @@ const Home_View = () => {
                                     cardMaxElevation={2}
                                     cornerRadius={30}
                                 >
-                                    <View style={{ justifyContent: 'center', margin: 10, marginTop: 25, flex: 1,  }}>
-                                        <Image source={item.image} resizeMode='contain' style={{ width: 110, backgroundColor: 'yellow', alignSelf: 'center', height: 110 }}></Image>
+                                    <TouchableOpacity style={{ justifyContent: 'center', margin: 10, marginTop: 25, flex: 1,  }}
+                                        onPress={__clickProduct}
+                                        >
+                                        <Image source={item.image} resizeMode='contain' style={{ width: 110, alignSelf: 'center', height: 110 }}></Image>
                                         <Text style={{ marginTop: 10, marginLeft: 8, fontSize: 15, color: 'black', fontWeight: '500', }}>
                                             {item.product_name}
                                         </Text>
@@ -166,7 +147,7 @@ const Home_View = () => {
                                             </TouchableOpacity>
                                             <Text style={{ flex: 1.5, alignSelf: 'flex-end', marginBottom: 5 }}>RM {item.product_price}</Text>
                                         </View>
-                                    </View>
+                                    </TouchableOpacity>
 
                                 </CardView>
 
