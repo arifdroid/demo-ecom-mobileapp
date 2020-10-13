@@ -164,7 +164,7 @@ const Home_View = () => {
                                                 </LinearGradient>
 
                                             </TouchableOpacity>
-                                            <Text style={{ flex: 1, alignSelf: 'flex-end', marginBottom: 10 }}>RM {item.product_price}</Text>
+                                            <Text style={{ flex: 1.5, alignSelf: 'flex-end', marginBottom: 5 }}>RM {item.product_price}</Text>
                                         </View>
                                     </View>
 
