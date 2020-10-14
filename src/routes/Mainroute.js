@@ -59,6 +59,19 @@ const ProductModules = () => {
     )
 }
 
+const Start_Modules = () => {
+
+
+    return (
+        <Stack.Navigator initialRouteName="Product_View">
+
+            <Stack.Screen name="Product_View" component={Product_View} options={{ headerShown: false }}></Stack.Screen>
+
+
+        </Stack.Navigator>
+    )
+}
+
 const MainRoute = () => {
 
     return (
