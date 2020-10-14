@@ -7,6 +7,8 @@ import Home_View from '../modules/home/Home_View';
 import Base_Profile_View from '../modules/user/base-profile/Base_Profile_View';
 import Cart_View from '../modules/cart/Cart_View';
 import Product_View from '../modules/product/Product_View';
+import Splashscreen_View from '../modules/splashscreen/Splashscreen_View';
+import Login_View from '../modules/login/Login_View';
 
 // import Profile from '../modules/profile/profile';
 // import Gruppe from '../modules/gruppe/gruppe';
@@ -63,12 +65,16 @@ const Start_Modules = () => {
 
 
     return (
-        <Stack.Navigator initialRouteName="Product_View">
+        <NavigationContainer>
+        <Stack.Navigator initialRouteName="Splashscreen_View">
 
-            <Stack.Screen name="Product_View" component={Product_View} options={{ headerShown: false }}></Stack.Screen>
+            <Stack.Screen name="Splashscreen_View" component={Splashscreen_View} options={{ headerShown: false }}></Stack.Screen>
+            <Stack.Screen name="MainRoute" component={MainRoute} options={{ headerShown: false }}></Stack.Screen>
+            <Stack.Screen name="Login_View" component={Login_View} options={{ headerShown: false }}></Stack.Screen>
 
 
         </Stack.Navigator>
+        </NavigationContainer>
     )
 }
 
@@ -76,7 +82,7 @@ const MainRoute = () => {
 
     return (
 
-        <NavigationContainer>
+        // <NavigationContainer>
             <BottomTab.Navigator initialRouteName='Profile' activeColor='black' inactiveColor='black' barStyle={{ backgroundColor: 'white', padding: 10, paddingBottom: 3 }}>
 
                 <BottomTab.Screen name='HomeModules' component={HomeModules} options={{
@@ -111,10 +117,10 @@ const MainRoute = () => {
 
 
             </BottomTab.Navigator>
-        </NavigationContainer>
+        // </NavigationContainer>
 
     )
 }
 
 
-export default MainRoute;
+export default Start_Modules;

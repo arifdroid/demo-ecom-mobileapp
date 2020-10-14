@@ -23,12 +23,12 @@ import {
   DebugInstructions,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
-import MainRoute from './src/routes/Mainroute';
+import Start_Modules from './src/routes/Start_Modules';
 
 const App: () => React$Node = () => {
   return (
     <>
-     <MainRoute/>
+     <Start_Modules/>
     </>
   );
 };
