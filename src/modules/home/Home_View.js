@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { SafeAreaView, Text, TouchableOpacity, Vibration, ScrollView, Image, FlatList, StyleSheet, View, Dimensions } from 'react-native';
 import LinearGradient from "react-native-linear-gradient";
 import Carousel from 'react-native-banner-carousel';
 import CardView from 'react-native-cardview'
+import { UserData_Context } from '../../context-provider/UserContext';
+import Axios from 'axios';
+import { URL, URL_DEV_2 } from "@env"
 
 
 const BannerWidth = Dimensions.get('window').width;
@@ -44,8 +47,42 @@ const renderPage = (image, index) => {
 
 const Home_View = ({navigation, route}) => {
 
+    const [refToken_context, setRefToken_context,currentUser, setCurrentUser,currentTenant, setCurrentTenant] = useContext(UserData_Context)
+
+    useEffect(()=>{
+
+        __loadProduct_list();
+
+    },[])
+
     const __clickProduct = ()=>{
         navigation.navigate('ProductModules')
+    }
+
+    const __loadProduct_list = async () => {
+        
+        try {
+            let config = {
+                headers: {
+                    'Authorization': `Bearer ${refToken_context}`
+                }
+            }
+            
+            let resp = await Axios.get(`${URL_DEV_2}/api/tenant/${currentTenant}/products`,config);
+
+            console.log('resp product is', resp)
+
+            // if (resp.data) {
+            //     setRefToken_context(resp.data)
+            //     navigation.navigate('MainRoute')
+                
+            // }
+
+        } catch (error) {            
+            console.log('error apa', error)
+            Alert.alert('error server')
+        }
+
     }
 
     return (

@@ -15,7 +15,7 @@ const Login_View = ({navigation}) => {
 
     const [email, setEmail] = useState('');
     const [pwd, setPwd] = useState('');
-    const [refToken_context, setRefToken_context,currentUser, setCurrentUser] = useContext(UserData_Context)
+    const [refToken_context, setRefToken_context,currentUser, setCurrentUser,currentTenant, setCurrentTenant] = useContext(UserData_Context)
 
     // console.log('URL_DEV_2s', URL_DEV_2)
 
@@ -30,13 +30,28 @@ const Login_View = ({navigation}) => {
             
             let resp = await axios.post(`${URL_DEV_2}/api/auth/sign-in`, data);
 
-            console.log('resp is', resp)
+            // console.log('data login', resp)
 
-            if (resp.data) {
-                setRefToken_context(resp.data)
-                navigation.navigate('MainRoute')
+            if(resp){ 
+                let config = {
+                    headers: {
+                        'Authorization': `Bearer ${resp.data.token}`
+                    }
+                }
+                let tenant = await axios.get(`${URL_DEV_2}/api/tenant`, config);
+                setRefToken_context(resp.data.token)    
+                setCurrentTenant(tenant.data.rows[0].id)
+                setCurrentUser(resp.data.user)
                 
+                navigation.navigate('MainRoute')
+            
             }
+
+            // if (resp.data) {
+            //     setRefToken_context(resp.data)
+            //     navigation.navigate('MainRoute')
+                
+            // }
 
         } catch (error) {            
             console.log('error apa', error)
