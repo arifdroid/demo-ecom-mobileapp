@@ -6,6 +6,7 @@ import CardView from 'react-native-cardview'
 import { UserData_Context } from '../../context-provider/UserContext';
 import Axios from 'axios';
 import { URL, URL_DEV_2 } from "@env"
+global.Buffer = global.Buffer || require('buffer').Buffer
 
 
 const BannerWidth = Dimensions.get('window').width;
@@ -45,40 +46,84 @@ const renderPage = (image, index) => {
     )
 }
 
-const Home_View = ({navigation, route}) => {
 
-    const [refToken_context, setRefToken_context,currentUser, setCurrentUser,currentTenant, setCurrentTenant] = useContext(UserData_Context)
 
-    useEffect(()=>{
+const Home_View = ({ navigation, route }) => {
+
+    const [refToken_context, setRefToken_context, currentUser, setCurrentUser, currentTenant, setCurrentTenant] = useContext(UserData_Context)
+
+    const [data_downloaded, setData_downloaded] = useState(null);
+
+    console.log('\n\n====\n')
+    console.log('data downloaded', data_downloaded)
+    console.log('\n====\n\n')
+
+    useEffect(() => {
 
         __loadProduct_list();
 
-    },[])
+    }, [])
 
-    const __clickProduct = ()=>{
+    const __clickProduct = () => {
         navigation.navigate('ProductModules')
     }
 
     const __loadProduct_list = async () => {
-        
+
         try {
             let config = {
                 headers: {
-                    'Authorization': `Bearer ${refToken_context}`
-                }
+                    'Authorization': `Bearer ${refToken_context}`,
+
+                },
+                // responseType: 'arraybuffer'
             }
-            
-            let resp = await Axios.get(`${URL_DEV_2}/api/tenant/${currentTenant}/products`,config);
 
-            console.log('resp product is', resp)
+            let resp = await Axios.get(`${URL_DEV_2}/api/tenant/${currentTenant}/products`, config);
 
-            // if (resp.data) {
-            //     setRefToken_context(resp.data)
-            //     navigation.navigate('MainRoute')
-                
-            // }
+            let data_product = resp.data.rows
+            console.log('resp product is', data_product)
 
-        } catch (error) {            
+            let data_image_with_image = [];
+
+            let config_2 = {
+                headers: {
+                    'Authorization': `Bearer ${refToken_context}`,
+
+                },
+                responseType: 'arraybuffer'
+            }
+
+            data_product.forEach(async (el) => {
+
+                console.log('image url is', el.images[0].downloadUrl)
+
+                await Axios.get(`${el.images[0].downloadUrl}`, config_2)
+                    .then((image) => {
+
+                        // console.log('\nimage downloaded->', image, '\n\n')
+                        // console.log('\nimage downloaded->', Buffer.from(image.data,'binary').toString('base64'), '\n\n')
+
+                        let data_image = Buffer.from(image.data, 'binary').toString('base64')
+                        // let data_image =  `data:image/png;base64,${Buffer.from(image.data, 'binary').toString('base64')}`
+
+                        data_image_with_image.push({ product_name: el.name, product_description: el.description, product_color: el.color, product_price: el.price, product_category: el.categories, image: data_image })
+                    }).catch(e => {
+                        console.log('download image error', e)
+                    })
+
+
+            })
+
+            if (data_image_with_image.length == data_product.length) {
+                setData_downloaded(data_image_with_image)
+            }
+
+            console.log('\n\n=====\n')
+            console.log('data with image is ->', data_image_with_image)
+            console.log('\n=====\n\n')
+
+        } catch (error) {
             console.log('error apa', error)
             Alert.alert('error server')
         }
@@ -111,44 +156,15 @@ const Home_View = ({navigation, route}) => {
 
                 </LinearGradient>
 
-{/* 
-                <CardView
-                    style={{ margin: 10, height: 220 }}
-                    cardElevation={2}
-                    cardMaxElevation={2}
-                    cornerRadius={5}>
-                    <Text style={{ margin: 10, fontSize: 16, color: '#707070' }}>
-                        KATEGORI
-                         </Text>
-                    <>
-
-                        <Categories></Categories>
-
-
-                    </>
-                </CardView>
-
-                <CardView
-                    style={{ margin: 10, height: 200, backgroundColor: '#FFF0E8' }}
-                    cardElevation={2}
-                    cardMaxElevation={2}
-                    cornerRadius={5}>
-                    <Text style={{ margin: 10, fontSize: 16, color: '#46214C', fontWeight: 'bold' }}>
-                        JUALAN HANGAT
-                         </Text>
-                    <>
-
-                        <HotSale></HotSale>
-
-
-                    </>
-                </CardView> */}
+               
 
                 <FlatList
 
-                    data={sample_data}
+                    data={data_downloaded ? data_downloaded : sample_data}
                     numColumns={2}
                     renderItem={({ item, index }) => {
+
+                        console.log('item image is', "data:image/png;base64," + item.image)
                         return (
 
                             <View style={{
@@ -164,21 +180,28 @@ const Home_View = ({navigation, route}) => {
                                     cardMaxElevation={2}
                                     cornerRadius={30}
                                 >
-                                    <TouchableOpacity style={{ justifyContent: 'center', margin: 10, marginTop: 25, flex: 1,  }}
+                                    <TouchableOpacity style={{ justifyContent: 'center', margin: 10, marginTop: 25, flex: 1, }}
                                         onPress={__clickProduct}
-                                        >
-                                        <Image source={item.image} resizeMode='contain' style={{ width: 110, alignSelf: 'center', height: 110 }}></Image>
-                                        <Text style={{ marginTop: 10, marginLeft: 8, fontSize: 15, color: 'black', fontWeight: '500', }}>
+                                    >
+                                        {/* {data_downloaded ? */}
+                                        <Image source={{ uri: "data:image/png;base64," + item.image }} resizeMode='contain' style={{ width: 110, alignSelf: 'center', height: 110 }}></Image>
+                                        {/* :
+                                            <Image source={item.image} resizeMode='contain' style={{ width: 110, alignSelf: 'center', height: 110 }}></Image> 
+                                            
+                                        } */}
+
+
+                                        <Text style={{ marginTop: 20, marginLeft: 8, fontSize: 15, color: 'black', fontWeight: '500', }}>
                                             {item.product_name}
                                         </Text>
-                                        <Text style={{ fontSize: 13, color: 'gray', marginLeft: 8, marginTop: 4 }}>
+                                        <Text style={{ fontSize: 13, color: 'gray', marginLeft: 8, marginTop: 8 }}>
                                             {item.product_description}
                                         </Text>
 
                                         <View style={{ flexDirection: 'row', flex: 1, }}>
                                             <TouchableOpacity style={{ flex: 1, alignSelf: 'flex-end', marginLeft: 20 }}>
-                                                <LinearGradient colors={['#FEC140','#FC966F' ,'#FA709A']} style={styles.linearGradient_button}>
-                                                    <Text style={{alignSelf:'center', fontSize:18, color:'white'}}>+</Text>
+                                                <LinearGradient colors={['#FEC140', '#FC966F', '#FA709A']} style={styles.linearGradient_button}>
+                                                    <Text style={{ alignSelf: 'center', fontSize: 18, color: 'white' }}>+</Text>
                                                 </LinearGradient>
 
                                             </TouchableOpacity>
@@ -225,16 +248,16 @@ const styles = StyleSheet.create({
     linearGradient_button: {
         height: 40,
         width: 35,
-        justifyContent:'center',
-        top:10,
+        justifyContent: 'center',
+        top: 10,
         // alignSelf:'flex-end',
 
         // paddingLeft: 5,
         // paddingRight: 5,
         // borderRadius: 15,
-        borderTopEndRadius:15,
-        borderTopStartRadius:15
-        
+        borderTopEndRadius: 15,
+        borderTopStartRadius: 15
+
     },
     buttonText: {
         fontSize: 18,
