@@ -23,7 +23,7 @@ const SecondRoute = () => (
 
 const initialLayout = { width: Dimensions.get('window').width };
 
-const Base_Profile_View = () => {
+const Base_Profile_View = ({navigation}) => {
 
     const [index, setIndex] = useState(0);
     const [routes] = React.useState([
@@ -100,7 +100,7 @@ const Base_Profile_View = () => {
                 >
 
                     <View style={{ margin: 10 }}>
-                        <Text style={{ color: 'black', fontWeight: '500', fontSize: 20, marginVertical: 20, marginHorizontal: 13 }}>Sales</Text>
+                        <Text style={{ color: 'black', fontWeight: '500', fontSize: 20, marginVertical: 20, marginHorizontal: 13 }}>Orders</Text>
                         <View style={[{
                             width: '93.5%',
                             height: 1,
@@ -119,7 +119,7 @@ const Base_Profile_View = () => {
                             </View>
                             <View style={{ flex: 1 }}>
                                 <View style={{ alignSelf: 'flex-end' }}>
-                                    <Text style={{ color: '#5BDA8C', fontWeight: '500', fontSize: 14, marginVertical: 5, marginHorizontal: 13 }}>+ RM 23.30</Text>
+                                    <Text style={{ color: '#5BDA8C', fontWeight: '500', fontSize: 14, marginVertical: 5, marginHorizontal: 13 }}>Done</Text>
                                 </View>
                                 <View style={{ alignSelf: 'flex-end' }}>
                                     <Text style={{ color: 'gray', fontSize: 12, marginVertical: 5, marginHorizontal: 12 }}>10 Oct 2020</Text>
@@ -145,7 +145,7 @@ const Base_Profile_View = () => {
                             </View>
                             <View style={{ flex: 1 }}>
                                 <View style={{ alignSelf: 'flex-end' }}>
-                                    <Text style={{ color: '#5BDA8C', fontWeight: '500', fontSize: 14, marginVertical: 5, marginHorizontal: 13 }}>+ RM 23.30</Text>
+                                    <Text style={{ color: '#5BDA8C', fontWeight: '500', fontSize: 14, marginVertical: 5, marginHorizontal: 13 }}>Done</Text>
                                 </View>
                                 <View style={{ alignSelf: 'flex-end' }}>
                                     <Text style={{ color: 'gray', fontSize: 12, marginVertical: 5, marginHorizontal: 12 }}>10 Oct 2020</Text>
@@ -170,7 +170,7 @@ const Base_Profile_View = () => {
                             </View>
                             <View style={{ flex: 1 }}>
                                 <View style={{ alignSelf: 'flex-end' }}>
-                                    <Text style={{ color: '#5BDA8C', fontWeight: '500', fontSize: 14, marginVertical: 5, marginHorizontal: 13 }}>+ RM 23.30</Text>
+                                    <Text style={{ color: '#F4013D', fontWeight: '500', fontSize: 14, marginVertical: 5, marginHorizontal: 13 }}>COD now</Text>
                                 </View>
                                 <View style={{ alignSelf: 'flex-end' }}>
                                     <Text style={{ color: 'gray', fontSize: 12, marginVertical: 5, marginHorizontal: 12 }}>10 Oct 2020</Text>
@@ -186,6 +186,7 @@ const Base_Profile_View = () => {
                             marginBottom: 35,
                             alignSelf: 'center'
                         }]}></View>
+                        {/* <TouchableOpacity style={{alignSelf:'center', marginBottom:10,}} onPress={()=>navigation.navigate('AddProduct_View')}><Text style={{color:'#FA709A'}}>View Order</Text></TouchableOpacity>    */}
 
                         {/* <TabView
                         navigationState={{ index, routes }}
@@ -291,18 +292,12 @@ const Base_Profile_View = () => {
                             borderWidth: 0.6,
                             backgroundColor: 'grey',
                             opacity: 0.1,
-                            marginBottom: 35,
+                            marginBottom: 25,
                             alignSelf: 'center'
                         }]}></View>
 
-                        {/* <TabView
-                        navigationState={{ index, routes }}
-                        renderScene={renderScene}
-                        renderTabBar={props => _renderTabBar(props) }
-                        onIndexChange={setIndex}
-                        initialLayout={initialLayout}
-                        style={{}}
-                    /> */}
+                        <TouchableOpacity style={{alignSelf:'center', marginBottom:10,}} onPress={()=>navigation.navigate('AddProduct_View')}><Text style={{color:'#FA709A'}}>+ Add Product</Text></TouchableOpacity>    
+
                     </View>
 
 

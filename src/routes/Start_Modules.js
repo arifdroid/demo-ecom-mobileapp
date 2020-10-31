@@ -9,6 +9,8 @@ import Cart_View from '../modules/cart/Cart_View';
 import Product_View from '../modules/product/Product_View';
 import Splashscreen_View from '../modules/splashscreen/Splashscreen_View';
 import Login_View from '../modules/login/Login_View';
+import SignUp_View from '../modules/sign-up/SignUp_View';
+import AddProduct_View from '../modules/add_product/AddProduct_View';
 
 // import Profile from '../modules/profile/profile';
 // import Gruppe from '../modules/gruppe/gruppe';
@@ -71,6 +73,8 @@ const Start_Modules = () => {
             <Stack.Screen name="Splashscreen_View" component={Splashscreen_View} options={{ headerShown: false }}></Stack.Screen>
             <Stack.Screen name="MainRoute" component={MainRoute} options={{ headerShown: false }}></Stack.Screen>
             <Stack.Screen name="Login_View" component={Login_View} options={{ headerShown: false }}></Stack.Screen>
+            <Stack.Screen name="SignUp_View" component={SignUp_View} options={{ headerShown: false }}></Stack.Screen>
+            <Stack.Screen name="AddProduct_View" component={AddProduct_View} options={{ headerShown: false }}></Stack.Screen>
 
 
         </Stack.Navigator>
