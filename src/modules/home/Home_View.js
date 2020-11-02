@@ -50,22 +50,66 @@ const renderPage = (image, index) => {
 
 const Home_View = ({ navigation, route }) => {
 
-    const [refToken_context, setRefToken_context, currentUser, setCurrentUser, currentTenant, setCurrentTenant] = useContext(UserData_Context)
+    const [refToken_context, setRefToken_context, currentUser, setCurrentUser, currentTenant, setCurrentTenant, cartData, setCartData] = useContext(UserData_Context)
 
     const [data_downloaded, setData_downloaded] = useState(null);
 
-    console.log('\n\n====\n')
-    console.log('data downloaded', data_downloaded)
-    console.log('\n====\n\n')
+    // console.log('\n\n====\n')
+    // console.log('data downloaded', data_downloaded)
+    // console.log('\n====\n\n')
 
     useEffect(() => {
-
+        setCartData(null)
         __loadProduct_list();
+        
 
     }, [])
 
-    const __clickProduct = () => {
-        navigation.navigate('ProductModules')
+    console.log('cart data ->', cartData)
+
+    const __clickProduct = (item) => {
+        // navigation.navigate('ProductModules')
+        
+        setCartData(prevData=>{
+            
+            let prevData_copy = prevData
+
+            // console.log('prevData is copy', prevData_copy)
+            // console.log('item clicked is', item)
+
+            let final_cart_data = [];
+
+            if(prevData_copy){
+                if(prevData_copy.length >0){
+
+                    let mapped_id = prevData_copy.map(el=>el.id);
+
+                    console.log('mapped id', mapped_id)
+                    
+                    if(mapped_id.find(el => el == item.id)){                        
+                        final_cart_data = prevData_copy.map(el =>{
+                            if(el.id == item.id){
+                                return {...el,quantity:el.quantity+1}
+                            }else{
+                                return el
+                            }
+                        })
+                    }else{
+                        // console.log('not found')
+                        final_cart_data.push(...prevData,{...item, quantity:1})
+                    }
+                   
+                }else{
+                    final_cart_data.push({...item,quantity:1})
+                }
+            }else{
+                final_cart_data.push({...item,quantity:1})
+            }
+
+            return final_cart_data
+
+            
+        })
     }
 
     const __loadProduct_list = async () => {
@@ -79,7 +123,7 @@ const Home_View = ({ navigation, route }) => {
                 // responseType: 'arraybuffer'
             }
 
-            let resp = await Axios.get(`${URL_DEV_2}/api/tenant/${currentTenant}/products`, config);
+            let resp = await Axios.get(`${URL}/api/tenant/${currentTenant}/products`, config);
 
             let data_product = resp.data.rows
             console.log('resp product is', data_product)
@@ -94,20 +138,18 @@ const Home_View = ({ navigation, route }) => {
                 responseType: 'arraybuffer'
             }
 
-            data_product.forEach(async (el) => {
+            data_product.forEach(async (el,i) => {
 
                 console.log('image url is', el.images[0].downloadUrl)
 
                 await Axios.get(`${el.images[0].downloadUrl}`, config_2)
                     .then((image) => {
 
-                        // console.log('\nimage downloaded->', image, '\n\n')
-                        // console.log('\nimage downloaded->', Buffer.from(image.data,'binary').toString('base64'), '\n\n')
-
                         let data_image = Buffer.from(image.data, 'binary').toString('base64')
                         // let data_image =  `data:image/png;base64,${Buffer.from(image.data, 'binary').toString('base64')}`
 
-                        data_image_with_image.push({ product_name: el.name, product_description: el.description, product_color: el.color, product_price: el.price, product_category: el.categories, image: data_image })
+                        data_image_with_image.push({id:el.id, product_name: el.name, product_description: el.description, product_color: el.color, product_price: el.price, product_category: el.categories, image: data_image })
+                        setData_downloaded(data_image_with_image)
                     }).catch(e => {
                         console.log('download image error', e)
                     })
@@ -115,13 +157,8 @@ const Home_View = ({ navigation, route }) => {
 
             })
 
-            if (data_image_with_image.length == data_product.length) {
-                setData_downloaded(data_image_with_image)
-            }
-
-            console.log('\n\n=====\n')
-            console.log('data with image is ->', data_image_with_image)
-            console.log('\n=====\n\n')
+                // setData_downloaded(data_image_with_image)
+         
 
         } catch (error) {
             console.log('error apa', error)
@@ -129,6 +166,10 @@ const Home_View = ({ navigation, route }) => {
         }
 
     }
+
+    useEffect(()=>{
+        
+    },[data_downloaded])
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
@@ -160,11 +201,11 @@ const Home_View = ({ navigation, route }) => {
 
                 <FlatList
 
-                    data={data_downloaded ? data_downloaded : sample_data}
+                    data={data_downloaded}
                     numColumns={2}
                     renderItem={({ item, index }) => {
 
-                        console.log('item image is', "data:image/png;base64," + item.image)
+                        // console.log('item image is', "data:image/png;base64," + item.image)
                         return (
 
                             <View style={{
@@ -181,7 +222,7 @@ const Home_View = ({ navigation, route }) => {
                                     cornerRadius={30}
                                 >
                                     <TouchableOpacity style={{ justifyContent: 'center', margin: 10, marginTop: 25, flex: 1, }}
-                                        onPress={__clickProduct}
+                                        onPress={()=>__clickProduct(item)}
                                     >
                                         {/* {data_downloaded ? */}
                                         <Image source={{ uri: "data:image/png;base64," + item.image }} resizeMode='contain' style={{ width: 110, alignSelf: 'center', height: 110 }}></Image>
@@ -199,7 +240,7 @@ const Home_View = ({ navigation, route }) => {
                                         </Text>
 
                                         <View style={{ flexDirection: 'row', flex: 1, }}>
-                                            <TouchableOpacity style={{ flex: 1, alignSelf: 'flex-end', marginLeft: 20 }}>
+                                            <TouchableOpacity style={{ flex: 1, alignSelf: 'flex-end', marginLeft: 20 }} onPress={()=>__clickProduct(item)}>
                                                 <LinearGradient colors={['#FEC140', '#FC966F', '#FA709A']} style={styles.linearGradient_button}>
                                                     <Text style={{ alignSelf: 'center', fontSize: 18, color: 'white' }}>+</Text>
                                                 </LinearGradient>

@@ -20,7 +20,7 @@ const Login_View = ({navigation}) => {
     // console.log('URL_DEV_2s', URL_DEV_2)
 
     const __pressLogin = async () => {
-        // console.log('URL_DEV_2s', URL_DEV_2)
+        console.log('URL', URL)
         try {
 
             let data = {
@@ -28,9 +28,9 @@ const Login_View = ({navigation}) => {
                 password: pwd
             }
             
-            let resp = await axios.post(`${URL_DEV_2}/api/auth/sign-in`, data);
+            let resp = await axios.post(`${URL}/api/auth/sign-in`, {email:email, password:pwd});
 
-            // console.log('data login', resp)
+            console.log('URL', URL)
 
             if(resp){ 
                 let config = {
@@ -38,7 +38,7 @@ const Login_View = ({navigation}) => {
                         'Authorization': `Bearer ${resp.data.token}`
                     }
                 }
-                let tenant = await axios.get(`${URL_DEV_2}/api/tenant`, config);
+                let tenant = await axios.get(`${URL}/api/tenant`, config);
                 setRefToken_context(resp.data.token)    
                 setCurrentTenant(tenant.data.rows[0].id)
                 setCurrentUser(resp.data.user)
