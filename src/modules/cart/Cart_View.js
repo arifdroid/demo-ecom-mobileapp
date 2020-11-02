@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 
 import { SafeAreaView, Text, TouchableOpacity, Image, FlatList, View, StyleSheet } from 'react-native';
 import CardView from 'react-native-cardview';
 import LinearGradient from 'react-native-linear-gradient';
+import { UserData_Context } from '../../context-provider/UserContext';
 
 
 
@@ -20,13 +21,46 @@ const sample_data = [
 
 const Cart_View = () => {
 
+    const [refToken_context, setRefToken_context, currentUser, setCurrentUser, currentTenant, setCurrentTenant, cartData, setCartData] = useContext(UserData_Context)
+
+    const _removeThisItem = ()=>{
+        setCartData(prevData=>{
+
+            let final_cart_data = [];
+
+            // final_cart_data = prevData.map(el =>{
+            //     if(el.id == item.id){
+            //         // return {...el,quantity:el.quantity+1}
+            //         // return null;
+            //         return []
+            //     }else{
+            //         return el
+            //     }
+            // })
+
+            // console.log('final cart data cart view', final_cart_data)
+
+            return final_cart_data
+
+        })
+    }
+
+    const __pressOrder = ()=>{
+
+    }
+
     return (
         <SafeAreaView style={{ flex: 1, }}>
             <Text style={{ marginLeft: 20, fontSize: 30, marginTop: 25, }}>My Cart</Text>
 
+             <TouchableOpacity style={{alignSelf:'flex-end', marginRight:30, marginHorizontal:10, marginBottom:20}} onPress={()=>_removeThisItem()}>
+                                        <Image source={image_delete} resizeMode='contain' style={{ width: 15, alignSelf: 'center', height: 15 }}></Image>
+                                       
+                                    </TouchableOpacity>
+
             <FlatList
 
-                data={sample_data}
+                data={cartData}
 
                 renderItem={({ item, index }) => {
                     return (
@@ -51,7 +85,7 @@ const Cart_View = () => {
 
                                 >
                                     <View style={{flex:1}}>
-                                        <Image source={item.image} resizeMode='contain' style={{ width: 75, alignSelf: 'center', height: 75 }}></Image>
+                                        <Image source={{ uri: "data:image/png;base64," + item.image }} resizeMode='contain' style={{ width: 75, alignSelf: 'center', height: 75 }}></Image>
                                         {/* <Text style={{ marginTop: 10, marginLeft: 8, fontSize: 15, color: 'black', fontWeight: '500', }}>
                                             {item.product_name}
                                         </Text> */}
@@ -75,10 +109,10 @@ const Cart_View = () => {
                                         </Text>
 
                                     </View>
-                                    <TouchableOpacity style={{flex:0.3 }}>
+                                    {/* <TouchableOpacity style={{flex:0.3 }} onPress={()=>_removeThisItem(item)}>
                                         <Image source={image_delete} resizeMode='contain' style={{ width: 15, alignSelf: 'center', height: 15 }}></Image>
                                        
-                                    </TouchableOpacity>
+                                    </TouchableOpacity> */}
 
 
                                 </View>
@@ -94,6 +128,20 @@ const Cart_View = () => {
 
             </FlatList>
 
+                {/* <View style={{width:'80%', alignSelf:'center', marginHorizontal:20, marginBottom:20, borderRadius:20}}> */}
+            <LinearGradient colors={['#FEC140', '#FC986E', '#FA709A']} style={styles.linearGradient_2} 
+            start={{x: 0.0, y: 0.25}} end={{x: 0.5, y: 1.0}}
+            // locations={[0,0.4,0.85]}
+            // locations={[0.2,0.5,0.85]}
+            >
+                <TouchableOpacity style={{ height: 50, width: 200, alignSelf: 'center', justifyContent:'center', borderRadius:20 }} onPress={__pressOrder}>
+
+                    <Text style={{alignSelf: 'center', color:'white'}}>Order Now</Text>
+
+                </TouchableOpacity>
+            </LinearGradient>
+            {/* </View> */}
+
         </SafeAreaView>
     )
 }
@@ -105,6 +153,16 @@ const styles = StyleSheet.create({
         paddingLeft: 5,
         paddingRight: 5,
         // alignSelf:'flex-end'
+        // borderRadius: 5
+    },
+    linearGradient_2: {
+        // height: 190,
+        paddingLeft: 5,
+        paddingRight: 5,
+        marginBottom:20,
+        width:'80%',
+        borderRadius:20,
+        alignSelf:'center'
         // borderRadius: 5
     },
     linearGradient_button: {

@@ -84,7 +84,7 @@ const Home_View = ({ navigation, route }) => {
 
                     let mapped_id = prevData_copy.map(el=>el.id);
 
-                    console.log('mapped id', mapped_id)
+                    // console.log('mapped id', mapped_id)
                     
                     if(mapped_id.find(el => el == item.id)){                        
                         final_cart_data = prevData_copy.map(el =>{
