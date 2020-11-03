@@ -149,13 +149,20 @@ const Home_View = ({ navigation, route }) => {
                         // let data_image =  `data:image/png;base64,${Buffer.from(image.data, 'binary').toString('base64')}`
 
                         data_image_with_image.push({id:el.id, product_name: el.name, product_description: el.description, product_color: el.color, product_price: el.price, product_category: el.categories, image: data_image })
-                        setData_downloaded(data_image_with_image)
+                        // setData_downloaded(data_image_with_image)
+                        if(data_product.length == data_image_with_image.length){
+                            setData_downloaded(data_image_with_image)
+                        }
                     }).catch(e => {
                         console.log('download image error', e)
                     })
 
 
             })
+
+            // if(data_product.length == data_image_with_image.length){
+            //     setData_downloaded(data_image_with_image)
+            // }
 
                 // setData_downloaded(data_image_with_image)
          
