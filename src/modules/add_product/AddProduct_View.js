@@ -11,6 +11,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { UserData_Context } from '../../context-provider/UserContext';
 import Axios from 'axios';
 import { Alert } from 'react-native';
+import RNFetchBlob from 'rn-fetch-blob'
 
 
 
@@ -24,9 +25,12 @@ const AddProduct_View = ({ navigation }) => {
         setDataImage(null)
     },[])
 
+
+    console.log('data image ->', dataImage)
+
     const takePicture = async () => {
         if (thisCamera) {
-            const options = { quality: 0.9, base64: true, orientation: RNCamera.Constants.Orientation.portrait, fixOrientation: true };
+            const options = { quality: 0.3, base64: true, orientation: RNCamera.Constants.Orientation.portrait, fixOrientation: true };
             const data = await thisCamera.takePictureAsync(options);
 
             if (Platform.OS === 'ios') {
@@ -44,7 +48,6 @@ const AddProduct_View = ({ navigation }) => {
                 setDataImage(data);
 
             } else {
-
                 setDataImage(data);
             }
         }
@@ -69,31 +72,86 @@ const AddProduct_View = ({ navigation }) => {
 
             let resp = await Axios.get(`${URL}/api/tenant/${currentTenant}/file/credentials?filename=${image_id}&storageId=productsImages`, config);
             
-            console.log('get image credential', resp)
-            const formData = new FormData();
-            if (resp.data.uploadCredentials.fields) {
-                for (const [key, value] of Object.entries(
-                  uploadCredentials.fields || {},
-                )) {
-                  formData.append(key, value);
-                }
-              }
+            const upload_url = resp.data.uploadCredentials.url;
+            const uploadCredentials = resp.data.uploadCredentials
+            
 
-              formData.append('file', dataImage.uri);
+            
 
-            let resp_upload = await Axios.post(`${resp.data.uploadCredentials.url}`, formData, {
-                headers: {
-                  'Content-Type': 'multipart/form-data',
+            let params = [
+                {
+                  name: 'key',
+                  data: `${uploadCredentials.fields.key}`,
                 },
-              });
+    
+                {
+                  name: 'x-goog-date',
+                  data: `${uploadCredentials.fields['x-goog-date']}`,
+                },
+                {
+                  name: 'x-goog-credential',
+                  data: `${uploadCredentials.fields['x-goog-credential']}`,
+                },
+                {
+                    name: 'x-goog-algorithm',
+                    data: `${uploadCredentials.fields['x-goog-algorithm']}`,
+                },
+                {
+                    name: 'policy',
+                    data: `${uploadCredentials.fields['policy']}`,
+                },
+                {
+                    name: 'x-goog-signature',
+                    data: `${uploadCredentials.fields['x-goog-signature']}`,
+                },
+                {
+                    name: 'file',
+                    filename: `${image_id}`,
+                    type: 'image/jpeg',
+                    data: RNFetchBlob.wrap(dataImage.uri),
+                  },
+              ];
 
-            console.log('resp_upload now is', resp_upload)
+              console.log('\n\n======\n')
+              console.log('image file name', image_id)
+              console.log('\n======\n\n')
+
+              RNFetchBlob.config({
+                trusty: true
+            }).fetch('POST', upload_url, {                
+                'Content-Type': 'multipart/form-data',                
+            }, params).then(resp => {
+                console.log('customerverifyupdate 4 NOW', resp);
+                
+            }).catch(error => {
+                console.log('customerverifyupdate 5 now', error);
+                
+            })
+
+            // let resp_upload = await Axios.post(upload_url, formData, {
+            //     headers: {
+            //       'Content-Type': 'multipart/form-data',
+            //     //   'Authorization': `Bearer ${refToken_context}`
+            //     },
+            //   });
+
+            // let resp_upload = await Axios.post(upload_url, formData, {
+            //     headers: {
+            //       'Content-Type': 'multipart/form-data',
+            //     },
+            //   }).then(resp=>{
+
+            //   }).catch(e=>{
+            //       console.log('upload error is', e)
+            //   })
+
+            // console.log('resp_upload now is', resp_upload)
 
 
 
         } catch (error) {
             
-            console.log('error got is')
+            console.log('error got is', error)
             Alert.alert('server error')
         }
         
