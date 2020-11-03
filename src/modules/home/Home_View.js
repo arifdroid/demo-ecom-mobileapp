@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { SafeAreaView, Text, TouchableOpacity, Vibration, ScrollView, Image, FlatList, StyleSheet, View, Dimensions } from 'react-native';
+import { SafeAreaView, Text, TouchableOpacity, Vibration, ScrollView, Image, FlatList, StyleSheet, View, Dimensions ,RefreshControl} from 'react-native';
 import LinearGradient from "react-native-linear-gradient";
 import Carousel from 'react-native-banner-carousel';
 import CardView from 'react-native-cardview'
@@ -53,6 +53,23 @@ const Home_View = ({ navigation, route }) => {
     const [refToken_context, setRefToken_context, currentUser, setCurrentUser, currentTenant, setCurrentTenant, cartData, setCartData] = useContext(UserData_Context)
 
     const [data_downloaded, setData_downloaded] = useState(null);
+    const [refreshing, setRefreshing] = useState(false);
+
+    const onRefresh = React.useCallback(async () => {
+        setRefreshing(true);
+        
+          try {
+          
+
+            await __loadProduct_list().then()
+            setRefreshing(false)
+
+
+          } catch (error) {
+            console.error('error refresh is',error);
+          }
+        
+      }, [refreshing]);
 
     // console.log('\n\n====\n')
     // console.log('data downloaded', data_downloaded)
@@ -210,6 +227,7 @@ const Home_View = ({ navigation, route }) => {
 
                     data={data_downloaded}
                     numColumns={2}
+                    refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}></RefreshControl>}
                     renderItem={({ item, index }) => {
 
                         // console.log('item image is', "data:image/png;base64," + item.image)
