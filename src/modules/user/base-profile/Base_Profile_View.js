@@ -76,18 +76,18 @@ const Base_Profile_View = ({navigation}) => {
                 <Text style={{ alignSelf: 'center', marginTop: 20, color: 'gray', fontWeight: '500', fontSize: 16 }}>Shop Information</Text>
 
                 <View style={{ flexDirection: 'row', flex: 1, margin: 20, marginBottom: 35, marginHorizontal: 30 }}>
-                    <View style={{ flex: 1 }}>
+                    <View style={{ flex:1 }}>
                         <Text style={{ color: 'gray', fontWeight: '500', fontSize: 13, marginVertical: 10 }}>Name</Text>
                         <Text style={{ color: 'gray', fontWeight: '500', fontSize: 13, marginVertical: 10 }}>Email</Text>
                         <Text style={{ color: 'gray', fontWeight: '500', fontSize: 13, marginVertical: 10 }}>Contact</Text>
-                        <Text style={{ color: 'gray', fontWeight: '500', fontSize: 13, marginVertical: 10 }}>Address</Text>
+                        
                     </View>
 
-                    <View style={{ flex: 2.5 }}>
-                        <TextInput style={{ color: 'gray', fontWeight: '500', fontSize: 13, marginVertical: 10 }} value={'K Shoppe Online Mart'}></TextInput>
-                        <TextInput style={{ color: 'gray', fontWeight: '500', fontSize: 13, marginVertical: 10 }} value={'KShoppeOnlineMart@gmail.com'}></TextInput>
-                        <TextInput style={{ color: 'gray', fontWeight: '500', fontSize: 13, marginVertical: 10 }} value={'60123323232'}></TextInput>
-                        <TextInput style={{ color: 'gray', fontWeight: '500', fontSize: 13, marginVertical: 10 }} value={'No.1 Jalan Chepor Indah 36, Taman Chepor Indah'}></TextInput>
+                    <View style={{ flex:2.4  }}>
+                        <Text style={{ color: 'gray', fontWeight: '500', fontSize: 13, marginVertical: 10 }} >K Shoppe Online Mart</Text>
+                        <Text style={{ color: 'gray', fontWeight: '500', fontSize: 13, marginVertical: 10 }} >KShoppeOnlineMart@gmail.com</Text>
+                        <Text style={{ color: 'gray', fontWeight: '500', fontSize: 13, marginVertical: 10 }} >60123323232</Text>
+                        
                     </View>
 
                 </View>

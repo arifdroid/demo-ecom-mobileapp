@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import { View } from 'react-native';
 import { TouchableOpacity } from 'react-native';
 import { SafeAreaView, StyleSheet, Text, Image } from 'react-native';
@@ -6,6 +6,11 @@ import { TextInput } from 'react-native-gesture-handler';
 import LinearGradient from 'react-native-linear-gradient';
 import { RNCamera } from 'react-native-camera';
 import { Platform } from 'react-native';
+import { URL, URL_DEV_2,URL_google_bucket } from "@env"
+import { v4 as uuidv4 } from 'uuid';
+import { UserData_Context } from '../../context-provider/UserContext';
+import Axios from 'axios';
+import { Alert } from 'react-native';
 
 
 
@@ -13,10 +18,15 @@ const AddProduct_View = ({ navigation }) => {
 
     var thisCamera = useRef(null);
     const [dataImage, setDataImage] = useState(null);
+    const [refToken_context, setRefToken_context, currentUser, setCurrentUser, currentTenant, setCurrentTenant, cartData, setCartData] = useContext(UserData_Context)
+    
+    useEffect(()=>{
+        setDataImage(null)
+    },[])
 
     const takePicture = async () => {
         if (thisCamera) {
-            const options = { quality: 0.9, base64: true, height: 1500, width: 2000 };
+            const options = { quality: 0.9, base64: true, orientation: RNCamera.Constants.Orientation.portrait, fixOrientation: true };
             const data = await thisCamera.takePictureAsync(options);
 
             if (Platform.OS === 'ios') {
@@ -39,6 +49,60 @@ const AddProduct_View = ({ navigation }) => {
             }
         }
     };
+
+    console.log('image now', dataImage )
+
+    const _uploadProduct=async()=>{
+
+        //create uuid
+        let image_id = uuidv4();
+        image_id = `${image_id}.jpg` 
+
+       
+        let config = {
+            headers: {
+                'Authorization': `Bearer ${refToken_context}`
+            }
+        }
+
+        try {
+
+            let resp = await Axios.get(`${URL}/api/tenant/${currentTenant}/file/credentials?filename=${image_id}&storageId=productsImages`, config);
+            
+            console.log('get image credential', resp)
+            const formData = new FormData();
+            if (resp.data.uploadCredentials.fields) {
+                for (const [key, value] of Object.entries(
+                  uploadCredentials.fields || {},
+                )) {
+                  formData.append(key, value);
+                }
+              }
+
+              formData.append('file', dataImage.uri);
+
+            let resp_upload = await Axios.post(`${resp.data.uploadCredentials.url}`, formData, {
+                headers: {
+                  'Content-Type': 'multipart/form-data',
+                },
+              });
+
+            console.log('resp_upload now is', resp_upload)
+
+
+
+        } catch (error) {
+            
+            console.log('error got is')
+            Alert.alert('server error')
+        }
+        
+       
+
+
+
+    }
+
 
 
     return (
@@ -81,8 +145,10 @@ const AddProduct_View = ({ navigation }) => {
 
                 <>
 
+                    <Image source={{uri: "data:image/png;base64," + dataImage.base64}}  style={{ width: 280, alignSelf: 'center', height: 280 }}></Image>
 
-                    <View style={{ flexDirection: 'row', width: '85%', alignSelf: 'center', marginBottom: 20 }}>
+
+                    <View style={{ flexDirection: 'row', width: '85%', alignSelf: 'center', marginBottom: 8 }}>
 
                         <Image source={require('../../common/asset/user_grey.png')} resizeMode='contain' style={{ width: 20, alignSelf: 'center', height: 20, flex: 0.5 }}></Image>
                         <View style={{ flex: 4, }}>
@@ -91,7 +157,7 @@ const AddProduct_View = ({ navigation }) => {
                         </View>
 
                     </View>
-                    <View style={{ flexDirection: 'row', width: '85%', alignSelf: 'center', marginBottom: 20 }}>
+                    <View style={{ flexDirection: 'row', width: '85%', alignSelf: 'center', marginBottom: 8 }}>
 
                         <Image source={require('../../common/asset/pwd_grey.png')} resizeMode='contain' style={{ width: 20, alignSelf: 'center', height: 20, flex: 0.5 }}></Image>
                         <View style={{ flex: 4, }}>
@@ -101,7 +167,7 @@ const AddProduct_View = ({ navigation }) => {
 
                     </View>
 
-                    <View style={{ flexDirection: 'row', width: '85%', alignSelf: 'center', marginBottom: 20 }}>
+                    <View style={{ flexDirection: 'row', width: '85%', alignSelf: 'center', marginBottom: 8 }}>
 
                         <Image source={require('../../common/asset/pwd_grey.png')} resizeMode='contain' style={{ width: 20, alignSelf: 'center', height: 20, flex: 0.5 }}></Image>
                         <View style={{ flex: 4, }}>
@@ -110,7 +176,7 @@ const AddProduct_View = ({ navigation }) => {
                         </View>
 
                     </View>
-                    <View style={{ flexDirection: 'row', width: '85%', alignSelf: 'center', marginBottom: 20 }}>
+                    <View style={{ flexDirection: 'row', width: '85%', alignSelf: 'center', marginBottom: 8 }}>
 
                         <Image source={require('../../common/asset/pwd_grey.png')} resizeMode='contain' style={{ width: 20, alignSelf: 'center', height: 20, flex: 0.5 }}></Image>
                         <View style={{ flex: 4, }}>
@@ -120,7 +186,7 @@ const AddProduct_View = ({ navigation }) => {
 
                     </View>
 
-                    <View style={{ flexDirection: 'row', width: '85%', alignSelf: 'center', marginBottom: 20 }}>
+                    <View style={{ flexDirection: 'row', width: '85%', alignSelf: 'center', marginBottom: 8 }}>
 
                         <Image source={require('../../common/asset/pwd_grey.png')} resizeMode='contain' style={{ width: 20, alignSelf: 'center', height: 20, flex: 0.5 }}></Image>
                         <View style={{ flex: 4, }}>
@@ -130,7 +196,7 @@ const AddProduct_View = ({ navigation }) => {
 
                     </View>
 
-                    <View style={{ flexDirection: 'row', width: '85%', alignSelf: 'center', marginBottom: 20 }}>
+                    <View style={{ flexDirection: 'row', width: '85%', alignSelf: 'center', marginBottom: 8 }}>
 
                         <Image source={require('../../common/asset/pwd_grey.png')} resizeMode='contain' style={{ width: 20, alignSelf: 'center', height: 20, flex: 0.5 }}></Image>
                         <View style={{ flex: 4, }}>
@@ -140,18 +206,35 @@ const AddProduct_View = ({ navigation }) => {
 
                     </View>
 
+                    <View style={{flexDirection:'row', alignSelf: 'center',}}>
+
+                    <LinearGradient colors={['#ffe0d4', '#ffe0d4', '#ffe0d4']} style={styles.linearGradient}
+                        start={{ x: 0.0, y: 0.25 }} end={{ x: 0.5, y: 1.0 }}
+                    // locations={[0,0.4,0.85]}
+                    // locations={[0.2,0.5,0.85]}
+                    >
+                        <TouchableOpacity style={{ height: 40, width: 130, alignSelf: 'center', justifyContent: 'center', borderColor:'#FA709A', borderRadius:0.5 }} onPress={()=>navigation.pop()}>
+
+                            <Text style={{ alignSelf: 'center', color: '#FA709A' }}>Cancel</Text>
+
+                        </TouchableOpacity>
+                    </LinearGradient>
+
+                    <View style={{margin:20}}></View>
+
 
                     <LinearGradient colors={['#FEC140', '#FC986E', '#FA709A']} style={styles.linearGradient}
                         start={{ x: 0.0, y: 0.25 }} end={{ x: 0.5, y: 1.0 }}
                     // locations={[0,0.4,0.85]}
                     // locations={[0.2,0.5,0.85]}
                     >
-                        <TouchableOpacity style={{ height: 50, width: 200, alignSelf: 'center', justifyContent: 'center' }} onPress={() => navigation.navigate('MainRoute')}>
+                        <TouchableOpacity style={{ height: 40, width: 130, alignSelf: 'center', justifyContent: 'center' }} onPress={_uploadProduct}>
 
                             <Text style={{ alignSelf: 'center', color: 'white' }}>Upload</Text>
 
                         </TouchableOpacity>
                     </LinearGradient>
+                    </View>
 
 
                 </>}
@@ -171,11 +254,14 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         // flex:1,
         alignSelf: 'center',
-        width: 200,
+        width: 150,
+        // marginVertical:10,
         paddingLeft: 5,
         paddingRight: 5,
         borderRadius: 30,
-        marginTop: 7
+        marginTop: 7,
+        borderColor:'#FA709A'
+        
 
     },
     container_gotimage: {
@@ -201,7 +287,7 @@ const styles = StyleSheet.create({
     },
     capture: {
         borderRadius: 5,
-        marginBottom: 20,
+        marginBottom: 8,
         flex: 1,
     },
     blank: {
