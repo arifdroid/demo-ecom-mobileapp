@@ -20,13 +20,20 @@ const AddProduct_View = ({ navigation }) => {
     var thisCamera = useRef(null);
     const [dataImage, setDataImage] = useState(null);
     const [refToken_context, setRefToken_context, currentUser, setCurrentUser, currentTenant, setCurrentTenant, cartData, setCartData] = useContext(UserData_Context)
+
+    const [name, setName]= useState('')
+    const [quantity, setQuantity]= useState(null)
+    const [color, setColor]= useState('')
+    const [description, setDescription]= useState('')
+    const [category, setCategory]= useState('')
+    const [price, setPrice]= useState(null)
     
     useEffect(()=>{
         setDataImage(null)
     },[])
 
 
-    console.log('data image ->', dataImage)
+    // console.log('data image ->', dataImage)
 
     const takePicture = async () => {
         if (thisCamera) {
@@ -53,12 +60,13 @@ const AddProduct_View = ({ navigation }) => {
         }
     };
 
-    console.log('image now', dataImage )
+    // console.log('image now', dataImage )
 
     const _uploadProduct=async()=>{
 
         //create uuid
         let image_id = uuidv4();
+        let image_id_only = image_id;
         image_id = `${image_id}.jpg` 
 
        
@@ -74,6 +82,8 @@ const AddProduct_View = ({ navigation }) => {
             
             const upload_url = resp.data.uploadCredentials.url;
             const uploadCredentials = resp.data.uploadCredentials
+            const downloadUrl_now = resp.data.downloadUrl
+            const privateUrl_now = resp.data.privateUrl
             
 
             
@@ -116,38 +126,54 @@ const AddProduct_View = ({ navigation }) => {
               console.log('image file name', image_id)
               console.log('\n======\n\n')
 
-              RNFetchBlob.config({
+             let upload_image = await  RNFetchBlob.config({
                 trusty: true
             }).fetch('POST', upload_url, {                
                 'Content-Type': 'multipart/form-data',                
-            }, params).then(resp => {
-                console.log('customerverifyupdate 4 NOW', resp);
-                
-            }).catch(error => {
-                console.log('customerverifyupdate 5 now', error);
-                
-            })
+            }, params);
 
-            // let resp_upload = await Axios.post(upload_url, formData, {
-            //     headers: {
-            //       'Content-Type': 'multipart/form-data',
-            //     //   'Authorization': `Bearer ${refToken_context}`
-            //     },
-            //   });
+            if(upload_image){
 
-            // let resp_upload = await Axios.post(upload_url, formData, {
-            //     headers: {
-            //       'Content-Type': 'multipart/form-data',
-            //     },
-            //   }).then(resp=>{
+                // console.log("\n\nresp before is", resp)
 
-            //   }).catch(e=>{
-            //       console.log('upload error is', e)
-            //   })
+                let data = {
+                    name:name,
+                    price:price,
+                    quantity:quantity,
+                    description:description,
+                    categories:category,
+                    color:color,
+                    // images:[{
+                    //     id:image_id_only,
+                    //     name:image_id,
+                    //     downloadUrl: downloadUrl_now,
+                    //     privateUrl: privateUrl_now,
+                    //     publicUrl:null,
+                    //     sizeInBytes:2414039
+                    // }] ,
+                    "images":[
+                        {"id":image_id_only,
+                        "downloadUrl":downloadUrl_now,
+                        "name":image_id,
+                        "new":true,
+                        "privateUrl":privateUrl_now,
+                        "publicUrl":null,
+                        "sizeInBytes":2414039
+                    }
+                    ]
+                }
 
-            // console.log('resp_upload now is', resp_upload)
+                console.log('data passed', data)
 
+                let resp_create_product = await Axios.post(`${URL}/api/tenant/${currentTenant}/products`,{data} ,config)
+                if(resp_create_product) navigation.pop();
+                // let resp_create_product = await RNFetchBlob.fetch('POST',`${URL}/api/tenant/${currentTenant}/products`,data ,config).catch(e=>{
 
+                //     console.log('create product error', e)
+                // })
+
+                console.log("resp_create_product is", resp_create_product)
+            }
 
         } catch (error) {
             
@@ -210,7 +236,7 @@ const AddProduct_View = ({ navigation }) => {
 
                         <Image source={require('../../common/asset/user_grey.png')} resizeMode='contain' style={{ width: 20, alignSelf: 'center', height: 20, flex: 0.5 }}></Image>
                         <View style={{ flex: 4, }}>
-                            <TextInput style={{ width: '100%', color: 'black' }} placeholder={'name'}></TextInput>
+                            <TextInput style={{ width: '100%', color: 'black' }} placeholder={'name'} onChangeText={(val)=>setName(val)}></TextInput>
                             <View style={{ borderWidth: 0.4, borderColor: 'gray', width: '98%', marginTop: 10 }}></View>
                         </View>
 
@@ -219,26 +245,7 @@ const AddProduct_View = ({ navigation }) => {
 
                         <Image source={require('../../common/asset/pwd_grey.png')} resizeMode='contain' style={{ width: 20, alignSelf: 'center', height: 20, flex: 0.5 }}></Image>
                         <View style={{ flex: 4, }}>
-                            <TextInput style={{ width: '100%', color: 'black' }} placeholder={'quantity'} ></TextInput>
-                            <View style={{ borderWidth: 0.4, borderColor: 'gray', width: '98%', marginTop: 10 }}></View>
-                        </View>
-
-                    </View>
-
-                    <View style={{ flexDirection: 'row', width: '85%', alignSelf: 'center', marginBottom: 8 }}>
-
-                        <Image source={require('../../common/asset/pwd_grey.png')} resizeMode='contain' style={{ width: 20, alignSelf: 'center', height: 20, flex: 0.5 }}></Image>
-                        <View style={{ flex: 4, }}>
-                            <TextInput style={{ width: '100%', color: 'black' }} placeholder={'color'} ></TextInput>
-                            <View style={{ borderWidth: 0.4, borderColor: 'gray', width: '98%', marginTop: 10 }}></View>
-                        </View>
-
-                    </View>
-                    <View style={{ flexDirection: 'row', width: '85%', alignSelf: 'center', marginBottom: 8 }}>
-
-                        <Image source={require('../../common/asset/pwd_grey.png')} resizeMode='contain' style={{ width: 20, alignSelf: 'center', height: 20, flex: 0.5 }}></Image>
-                        <View style={{ flex: 4, }}>
-                            <TextInput style={{ width: '100%', color: 'black' }} placeholder={'description'} ></TextInput>
+                            <TextInput style={{ width: '100%', color: 'black' }} placeholder={'quantity'} onChangeText={(val)=>setQuantity(val)}></TextInput>
                             <View style={{ borderWidth: 0.4, borderColor: 'gray', width: '98%', marginTop: 10 }}></View>
                         </View>
 
@@ -248,7 +255,16 @@ const AddProduct_View = ({ navigation }) => {
 
                         <Image source={require('../../common/asset/pwd_grey.png')} resizeMode='contain' style={{ width: 20, alignSelf: 'center', height: 20, flex: 0.5 }}></Image>
                         <View style={{ flex: 4, }}>
-                            <TextInput style={{ width: '100%', color: 'black' }} placeholder={'category'} ></TextInput>
+                            <TextInput style={{ width: '100%', color: 'black' }} placeholder={'color'} onChangeText={(val)=>setColor(val)}></TextInput>
+                            <View style={{ borderWidth: 0.4, borderColor: 'gray', width: '98%', marginTop: 10 }}></View>
+                        </View>
+
+                    </View>
+                    <View style={{ flexDirection: 'row', width: '85%', alignSelf: 'center', marginBottom: 8 }}>
+
+                        <Image source={require('../../common/asset/pwd_grey.png')} resizeMode='contain' style={{ width: 20, alignSelf: 'center', height: 20, flex: 0.5 }}></Image>
+                        <View style={{ flex: 4, }}>
+                            <TextInput style={{ width: '100%', color: 'black' }} placeholder={'description'} onChangeText={(val)=>setDescription(val)} ></TextInput>
                             <View style={{ borderWidth: 0.4, borderColor: 'gray', width: '98%', marginTop: 10 }}></View>
                         </View>
 
@@ -258,7 +274,17 @@ const AddProduct_View = ({ navigation }) => {
 
                         <Image source={require('../../common/asset/pwd_grey.png')} resizeMode='contain' style={{ width: 20, alignSelf: 'center', height: 20, flex: 0.5 }}></Image>
                         <View style={{ flex: 4, }}>
-                            <TextInput style={{ width: '100%', color: 'black' }} placeholder={'price'} ></TextInput>
+                            <TextInput style={{ width: '100%', color: 'black' }} placeholder={'category'} onChangeText={(val)=>setCategory(val)}></TextInput>
+                            <View style={{ borderWidth: 0.4, borderColor: 'gray', width: '98%', marginTop: 10 }}></View>
+                        </View>
+
+                    </View>
+
+                    <View style={{ flexDirection: 'row', width: '85%', alignSelf: 'center', marginBottom: 8 }}>
+
+                        <Image source={require('../../common/asset/pwd_grey.png')} resizeMode='contain' style={{ width: 20, alignSelf: 'center', height: 20, flex: 0.5 }}></Image>
+                        <View style={{ flex: 4, }}>
+                            <TextInput style={{ width: '100%', color: 'black' }} placeholder={'price'} onChangeText={(val)=>setPrice(val)}></TextInput>
                             <View style={{ borderWidth: 0.4, borderColor: 'gray', width: '98%', marginTop: 10 }}></View>
                         </View>
 
