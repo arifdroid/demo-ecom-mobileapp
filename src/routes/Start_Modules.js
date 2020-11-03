@@ -11,6 +11,7 @@ import Splashscreen_View from '../modules/splashscreen/Splashscreen_View';
 import Login_View from '../modules/login/Login_View';
 import SignUp_View from '../modules/sign-up/SignUp_View';
 import AddProduct_View from '../modules/add_product/AddProduct_View';
+import OrderDetails_View from "../modules/order-details/OrderDetails_View";
 
 // import Profile from '../modules/profile/profile';
 // import Gruppe from '../modules/gruppe/gruppe';
@@ -42,7 +43,7 @@ const HomeModules = () => {
         <Stack.Navigator initialRouteName="Home_View">
 
             <Stack.Screen name="Home_View" component={Home_View} options={{ headerShown: false }}></Stack.Screen>            
-            <Stack.Screen name="ProductModules" component={ProductModules} options={{ headerShown: false }}></Stack.Screen>
+            {/* <Stack.Screen name="ProductModules" component={ProductModules} options={{ headerShown: false }}></Stack.Screen> */}
 
 
         </Stack.Navigator>
@@ -75,6 +76,8 @@ const Start_Modules = () => {
             <Stack.Screen name="Login_View" component={Login_View} options={{ headerShown: false }}></Stack.Screen>
             <Stack.Screen name="SignUp_View" component={SignUp_View} options={{ headerShown: false }}></Stack.Screen>
             <Stack.Screen name="AddProduct_View" component={AddProduct_View} options={{ headerShown: false }}></Stack.Screen>
+            <Stack.Screen name="Product_View" component={Product_View} options={{ headerShown: false }}></Stack.Screen>
+            <Stack.Screen name="OrderDetails_View" component={OrderDetails_View} options={{ headerShown: false }}></Stack.Screen>
 
 
         </Stack.Navigator>

@@ -8,11 +8,12 @@ const UserContext = (props) =>{
     const [currentUser, setCurrentUser ] =useState(null);
     const [currentTenant, setCurrentTenant ] =useState(null);
     const [cartData, setCartData ] =useState(null);
+    const [orderData, setOrderData ] =useState(null);
 
     
     return(
 
-        <UserData_Context.Provider value={[refToken_context,setRefToken_context,currentUser,setCurrentUser,currentTenant, setCurrentTenant,cartData, setCartData]}>
+        <UserData_Context.Provider value={[refToken_context,setRefToken_context,currentUser,setCurrentUser,currentTenant, setCurrentTenant,cartData, setCartData,orderData, setOrderData]}>
             {props.children}
         </UserData_Context.Provider>
     )
