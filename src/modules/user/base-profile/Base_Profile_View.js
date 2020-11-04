@@ -43,7 +43,7 @@ const Base_Profile_View = ({ navigation }) => {
 
     useEffect(() => {
 
-        if (currentUser.id == 'a8fae91b-a377-4806-8919-99b39e3a96ad') {
+        if (currentUser.id == 'a8fae91b-a377-4806-8919-99b39e3a96ad' || currentUser.id == '4e616002-aa9d-416a-9de2-798409941953') {
             _load_current_order();
         }
 
@@ -70,17 +70,43 @@ const Base_Profile_View = ({ navigation }) => {
 
         try {
 
+            let params={
+                filter:{
+                    "userId":currentUser.id
+                }
+            }
+
+            params = params.toString();
+
             let config = {
                 headers: {
                     'Authorization': `Bearer ${refToken_context}`,
 
                 },
+                // params:{
+                //     filter:{
+                //         "userId":currentUser.id
+                //     }
+                // }
 
             }
 
-            let resp = await Axios.get(`${URL}/api/tenant/${currentTenant}/orders`, config);
 
-            if (resp) setOrderData(resp.data.rows)
+            if (currentUser.id == 'a8fae91b-a377-4806-8919-99b39e3a96ad' || currentUser.id == '4e616002-aa9d-416a-9de2-798409941953') {
+
+                let resp = await Axios.get(`${URL}/api/tenant/${currentTenant}/orders`, config);
+                if (resp) setOrderData(resp.data.rows)
+
+            }else{
+
+                let resp = await Axios.get(`${URL}/api/tenant/${currentTenant}/orders?filter[userId]=${currentUser.id}`, config);
+                if (resp) setOrderData(resp.data.rows)
+
+            }
+
+            
+
+            
 
         } catch (error) {
             Alert.alert('server error load order list')
@@ -144,7 +170,7 @@ const Base_Profile_View = ({ navigation }) => {
             <ScrollView style={{ flex: 1 }}>
                 <Image source={image_logo_shop} resizeMode='contain' style={{ width: 135, alignSelf: 'center', height: 135, borderRadius: 10, marginTop: 25 }}></Image>
 
-                {currentUser.id == 'a8fae91b-a377-4806-8919-99b39e3a96ad' ?
+                {currentUser.id == 'a8fae91b-a377-4806-8919-99b39e3a96ad' || currentUser.id == '4e616002-aa9d-416a-9de2-798409941953' ?
                     <Text style={{ alignSelf: 'center', marginTop: 20, color: 'gray', fontWeight: '500', fontSize: 16 }}> Shop Information</Text> :
                     <Text style={{ alignSelf: 'center', marginTop: 20, color: 'gray', fontWeight: '500', fontSize: 16 }}> User Information</Text>
                 }
@@ -249,7 +275,7 @@ const Base_Profile_View = ({ navigation }) => {
                     cornerRadius={5}
                 >
 
-                    {currentUser.id == 'a8fae91b-a377-4806-8919-99b39e3a96ad' ?
+                    {currentUser.id == 'a8fae91b-a377-4806-8919-99b39e3a96ad' || currentUser.id == '4e616002-aa9d-416a-9de2-798409941953' ?
                         <>
 
                             <TouchableOpacity style={{ alignSelf: 'center', marginBottom: 10, }} onPress={() => navigation.navigate('AddProduct_View')}><Text style={{ color: '#FA709A' }}>+ Add Product</Text></TouchableOpacity>
