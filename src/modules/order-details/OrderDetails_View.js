@@ -20,6 +20,12 @@ const OrderDetails_View = ({ navigation, route }) => {
     const [productList, setProductList] = useState(null)
     const [orderDetails, setOrderDetails] = useState(null)
 
+    const [total_price, setTotal_Price] = useState(0)
+
+    const [order_id_this, setorder_id_this] = useState(null);
+
+    console.log('order details', orderDetails)
+
     useEffect(() => {
 
         // const {order_id}= route.params
@@ -30,6 +36,7 @@ const OrderDetails_View = ({ navigation, route }) => {
             let { order_id } = route.params
 
             _load_order_details(order_id)
+            setorder_id_this(order_id);
 
         }
     }, [])
@@ -62,6 +69,26 @@ const OrderDetails_View = ({ navigation, route }) => {
 
     }
 
+
+    useEffect(() => {
+
+        if (orderDetails) {
+            let total_price = 0;
+
+            orderDetails.productId.forEach(el => {
+                total_price = parseInt(el.total_price) + total_price
+
+                console.log('loop price', el.total_price)
+            })
+
+            setTotal_Price(total_price)
+        }
+
+    }, [orderDetails])
+
+
+
+
     const _load_Product_Details = async (orderarray) => {
 
         console.log('load order details')
@@ -87,6 +114,8 @@ const OrderDetails_View = ({ navigation, route }) => {
 
                 if (productData.length == orderarray.length) {
                     setProductList(productData)
+
+
                 }
             }
 
@@ -102,13 +131,48 @@ const OrderDetails_View = ({ navigation, route }) => {
     console.log('order details', orderDetails)
     console.log('\n\n=====\n\nproduct details', productList)
 
+    const __orderDone = async () => {
+
+        
+
+        try {
+
+            let data = {
+                id: `${order_id_this}`,
+                data: {
+                    status: "true"
+                }
+            }
+    
+            let config = {
+                headers: {
+                    'Authorization': `Bearer ${refToken_context}`,
+    
+                },
+    
+            }
+
+
+            let update_order = await Axios.put(`${URL}/api/tenant/${currentTenant}/orders/${order_id_this}`, data, config);
+
+            if(update_order) navigation.pop();
+
+            
+
+        } catch (error) {
+            Alert.alert('update COD status fail')
+        }
+
+
+    }
+
 
 
     return (
-        <SafeAreaView style={{ flex: 1, justifyContent:'center' }}>
+        <SafeAreaView style={{ flex: 1, justifyContent: 'center' }}>
 
             <CardView
-                style={{ marginVertical: 7, backgroundColor: 'white', marginHorizontal: 10 , paddingBottom: 50,}}
+                style={{ marginVertical: 7, backgroundColor: 'white', marginHorizontal: 10, paddingBottom: 50, }}
                 cardElevation={2}
                 cardMaxElevation={2}
                 cornerRadius={10}
@@ -165,7 +229,7 @@ const OrderDetails_View = ({ navigation, route }) => {
                                                 </View>
                                                 <View style={{ flex: 1 }}>
                                                     <View style={{ alignSelf: 'flex-end' }}>
-                                                        <Text style={{ color: '#F4013D', fontWeight: '500', fontSize: 14, marginVertical: 5, marginHorizontal: 13 }}>COD now</Text>
+                                                 <Text style={{  },[orderDetails.status?{color:'green',fontWeight: '500', fontSize: 14, marginVertical: 5, marginHorizontal: 13 }:{color:'#F4013D',fontWeight: '500', fontSize: 14, marginVertical: 5, marginHorizontal: 13 }]}>{orderDetails.status? "Done": 'COD Now'}</Text>
                                                     </View>
                                                     <View style={{ alignSelf: 'flex-end' }}>
                                                         <Text style={{ color: 'gray', fontSize: 12, marginVertical: 5, marginHorizontal: 12 }}>{orderData[0] ? `date : ${orderData[0].createdAt.substring(0, 10)}` : ''}</Text>
@@ -187,6 +251,23 @@ const OrderDetails_View = ({ navigation, route }) => {
 
                 ) : null}
 
+                <Text style={{ color: 'black', fontWeight: '500', fontSize: 20, marginVertical: 20, marginHorizontal: 13 }}>Total Price : RM {total_price}</Text>
+
+                {/* <View style={{ marginTop: 50 }}></View> */}
+
+
+
+                <LinearGradient colors={['#FEC140', '#FC986E', '#FA709A']} style={styles.linearGradient}
+                    start={{ x: 0.0, y: 0.25 }} end={{ x: 0.5, y: 1.0 }}
+                // locations={[0,0.4,0.85]}
+                // locations={[0.2,0.5,0.85]}
+                >
+                    <TouchableOpacity style={{ height: 50, width: 200, alignSelf: 'center', justifyContent: 'center' }} onPress={__orderDone}>
+
+                        <Text style={{ alignSelf: 'center', color: 'white' }}>Close Order</Text>
+
+                    </TouchableOpacity>
+                </LinearGradient>
 
             </CardView>
         </SafeAreaView>
@@ -199,6 +280,7 @@ const styles = StyleSheet.create({
         // flex:1,
         alignSelf: 'center',
         width: 200,
+        marginTop: 40,
         paddingLeft: 5,
         paddingRight: 5,
         borderRadius: 30,
