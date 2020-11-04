@@ -148,7 +148,7 @@ const Cart_View = () => {
 
         let cod_time_this = ''
         
-        if(toggleLocationDelivery_1) cod_location_this = 'Infront of hostel Delime'
+        if(toggleLocationDelivery_1) cod_location_this = 'Infront of hostel Delima'
         else if(toggleLocationDelivery_2) cod_location_this = 'Infront of hostel Zamrud'
         else if(toggleLocationDelivery_3) cod_location_this = 'At the cafe'
         else if(locationCustom!='')cod_location_this = locationCustom
@@ -349,7 +349,7 @@ const Cart_View = () => {
                     <View style={{ borderWidth: 0.4, borderColor: 'gray', width: '98%', marginTop: 10 }}></View>
                 </View>
 
-                <Text style={{ marginLeft: 20, fontSize: 22, marginTop: 15, marginBottom: 15 }}>Total Price : {total_price}</Text>
+                <Text style={{ marginLeft: 20, fontSize: 22, marginTop: 15, marginBottom: 35 }}>Total Price : {total_price}</Text>
 
                 {/* <View style={{width:'80%', alignSelf:'center', marginHorizontal:20, marginBottom:20, borderRadius:20}}> */}
                 <LinearGradient colors={['#FEC140', '#FC986E', '#FA709A']} style={styles.linearGradient_2}
@@ -375,6 +375,7 @@ const styles = StyleSheet.create({
         // height: 190,
         paddingLeft: 5,
         paddingRight: 5,
+        
         // alignSelf:'flex-end'
         // borderRadius: 5
     },

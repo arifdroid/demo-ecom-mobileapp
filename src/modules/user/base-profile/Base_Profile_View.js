@@ -11,6 +11,8 @@ import { URL, URL_DEV_2 } from "@env"
 import { UserData_Context } from '../../../context-provider/UserContext';
 import Axios from 'axios';
 import { Alert } from 'react-native';
+import { FlatList } from 'react-native';
+import { RefreshControl } from 'react-native';
 
 const image_logo_shop = require('../../../common/asset/user/logo.png');
 
@@ -35,6 +37,8 @@ const Base_Profile_View = ({ navigation }) => {
         { key: 'second', title: 'Second' },
     ]);
 
+    const [refreshing, setRefreshing] = useState(false);
+
     const [refToken_context, setRefToken_context, currentUser, setCurrentUser, currentTenant, setCurrentTenant, cartData, setCartData, orderData, setOrderData] = useContext(UserData_Context)
 
     useEffect(() => {
@@ -44,6 +48,22 @@ const Base_Profile_View = ({ navigation }) => {
         }
 
     }, [])
+
+    const onRefresh = React.useCallback(async () => {
+        setRefreshing(true);
+        
+          try {
+          
+
+            await _load_current_order().then()
+            setRefreshing(false)
+
+
+          } catch (error) {
+            console.error('error refresh is',error);
+          }
+        
+      }, [refreshing]);
 
     const _load_current_order = async () => {
 
@@ -60,7 +80,7 @@ const Base_Profile_View = ({ navigation }) => {
 
             let resp = await Axios.get(`${URL}/api/tenant/${currentTenant}/orders`, config);
 
-            if(resp) setOrderData(resp.data.rows)
+            if (resp) setOrderData(resp.data.rows)
 
         } catch (error) {
             Alert.alert('server error load order list')
@@ -71,7 +91,7 @@ const Base_Profile_View = ({ navigation }) => {
 
     console.log('\n\norder data ->', orderData, '\n\n')
 
-    
+
 
     console.log('current user is', currentUser)
 
@@ -148,124 +168,70 @@ const Base_Profile_View = ({ navigation }) => {
                 </View>
 
                 <CardView
-                    style={{ marginVertical: 7, backgroundColor: 'white', flex: 1, marginHorizontal: 10 }}
+                    style={{ marginVertical: 7, backgroundColor: 'white', flex: 1, marginHorizontal: 10, paddingBottom:40, }}
                     cardElevation={2}
                     cardMaxElevation={2}
                     cornerRadius={5}
                 >
                     {orderData != null ? <>
 
-                        {orderData.length > 0 ? (
+                        <Text style={{ color: 'black', fontWeight: '500', fontSize: 20, marginVertical: 20, marginHorizontal: 13 }}>Orders</Text>
+                        <FlatList
+                            data={orderData.slice(0, 3)}
+                            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}></RefreshControl>}
+                            renderItem={({ item }) => {
+                                
+                                return (
+                                    <>
 
-                            <View style={{ margin: 10 }}>
-                                <TouchableOpacity onPress={() => _orderDetails(orderData[0].id)}>
-                                    <Text style={{ color: 'black', fontWeight: '500', fontSize: 20, marginVertical: 20, marginHorizontal: 13 }}>Orders</Text>
-                                    <View style={[{
-                                        width: '93.5%',
-                                        height: 1,
-                                        borderWidth: 0.6,
-                                        backgroundColor: 'grey',
-                                        opacity: 0.1,
-                                        marginBottom: 5,
-                                        alignSelf: 'center'
-                                    }]}>
+                                        <TouchableOpacity onPress={() => _orderDetails(item.id)}>
 
-                                    </View>
-                                    <View style={{ flexDirection: 'row', flex: 1 }}>
-                                        <View style={{ flex: 1 }}>
-                                            <Text style={{ color: 'black', fontWeight: '500', fontSize: 14, marginVertical: 5, marginHorizontal: 13 }}>{orderData[0] ? `order id : ${orderData[0].id.substring(0, 12)}` : ''}</Text>
-                                            <Text style={{ color: 'gray', fontSize: 12, marginVertical: 5, marginHorizontal: 12 }}>{orderData[0] ? `user : ${orderData[0].userId.fullName}` : ''}</Text>
-                                        </View>
-                                        <View style={{ flex: 1 }}>
-                                            <View style={{ alignSelf: 'flex-end' }}>
-                                                {/* <Text style={{ color: '#F4013D', fontWeight: '500', fontSize: 14, marginVertical: 5, marginHorizontal: 13 }}>COD now</Text> */}
-                                                {/* <Text style={{}, [orderData[0].status ? { color: 'green', fontWeight: '500', fontSize: 14, marginVertical: 5, marginHorizontal: 13 } : { color: '#F4013D', fontWeight: '500', fontSize: 14, marginVertical: 5, marginHorizontal: 13 }]}>{orderData[0].status ? "Done" : 'COD Now'}</Text> */}
+                                            <View style={[{
+                                                width: '93.5%',
+                                                height: 1,
+                                                borderWidth: 0.6,
+                                                backgroundColor: 'grey',
+                                                opacity: 0.1,
+                                                marginBottom: 5,
+                                                alignSelf: 'center'
+                                            }]}>
+
                                             </View>
-                                            <View style={{ alignSelf: 'flex-end' }}>
-                                                <Text style={{ color: 'gray', fontSize: 12, marginVertical: 5, marginHorizontal: 12 }}>{orderData[0] ? `date : ${orderData[0].createdAt.substring(0, 10)}` : ''}</Text>
+                                            <View style={{ flexDirection: 'row', flex: 1 }}>
+                                                <View style={{ flex: 1 }}>
+                                                    <Text style={{ color: 'black', fontWeight: '500', fontSize: 14, marginVertical: 5, marginHorizontal: 13 }}>{`order id : ${item.id.substring(0, 12)}`}</Text>
+                                                    <Text style={{ color: 'gray', fontSize: 12, marginVertical: 5, marginHorizontal: 12 }}>{`user : ${item.userId.fullName}`}</Text>
+                                                </View>
+                                                <View style={{ flex: 1 }}>
+                                                    <View style={{ alignSelf: 'flex-end' }}>
+                                                        {/* <Text style={{ color: '#F4013D', fontWeight: '500', fontSize: 14, marginVertical: 5, marginHorizontal: 13 }}>COD now</Text> */}
+                                                        <Text style={{}, [item.status ? { color: 'green', fontWeight: '500', fontSize: 14, marginVertical: 5, marginHorizontal: 13 } : { color: '#F4013D', fontWeight: '500', fontSize: 14, marginVertical: 5, marginHorizontal: 13 }]}>{item.status ? "Done" : 'COD Now'}</Text>
+                                                    </View>
+                                                    <View style={{ alignSelf: 'flex-end' }}>
+                                                        <Text style={{ color: 'gray', fontSize: 12, marginVertical: 5, marginHorizontal: 12 }}>{`date : ${item.createdAt.substring(0, 10)}`}</Text>
+                                                    </View>
+                                                </View>
                                             </View>
-                                        </View>
-                                    </View>
-                                </TouchableOpacity>
-                                {orderData.length>=1? 
-                                <TouchableOpacity onPress={() => _orderDetails(orderData[1].id)}>
-                                <View style={[{
-                                    width: '93.5%',
-                                    height: 1,
-                                    borderWidth: 0.6,
-                                    backgroundColor: 'grey',
-                                    opacity: 0.1,
-                                    marginBottom: 5,
-                                    alignSelf: 'center'
-                                }]}>
+                                        </TouchableOpacity>
 
-                                </View>
-                                <View style={{ flexDirection: 'row', flex: 1 }}>
-                                    <View style={{ flex: 1 }}>
-                                        <Text style={{ color: 'black', fontWeight: '500', fontSize: 14, marginVertical: 5, marginHorizontal: 13 }}>{orderData[1] ? `order id : ${orderData[1].id.substring(0, 12)}` : ''}</Text>
-                                        <Text style={{ color: 'gray', fontSize: 12, marginVertical: 5, marginHorizontal: 12 }}>{orderData[1] ? `user : ${orderData[1].userId.fullName}` : ''}</Text>
-                                    </View>
-                                    <View style={{ flex: 1 }}>
-                                        <View style={{ alignSelf: 'flex-end' }}>
-                                            {/* <Text style={{ color: '#F4013D', fontWeight: '500', fontSize: 14, marginVertical: 5, marginHorizontal: 13 }}>{orderData[1].status}</Text> */}
-                                            {/* <Text style={{}, [orderData[1].status ? { color: 'green', fontWeight: '500', fontSize: 14, marginVertical: 5, marginHorizontal: 13 } : { color: '#F4013D', fontWeight: '500', fontSize: 14, marginVertical: 5, marginHorizontal: 13 }]}>{orderData[1].status ? "Done" : 'COD Now'}</Text> */}
-                                        </View>
-                                        <View style={{ alignSelf: 'flex-end' }}>
-                                            <Text style={{ color: 'gray', fontSize: 12, marginVertical: 5, marginHorizontal: 12 }}>{orderData[1] ? `date : ${orderData[1].createdAt.substring(0, 10)}` : ''}</Text>
-                                        </View>
-                                    </View>
-                                </View>
 
-                            </TouchableOpacity>
-                                
-                                :null}
+                                    </>)
 
-                            {orderData.length>=2? 
-                            <TouchableOpacity onPress={() => _orderDetails(orderData[2].id)}>
-                            <View style={[{
-                                width: '93.5%',
-                                height: 1,
-                                borderWidth: 0.6,
-                                backgroundColor: 'grey',
-                                opacity: 0.1,
-                                marginBottom: 5,
-                                alignSelf: 'center'
-                            }]}>
+                            }}>
 
-                            </View>
-                            <View style={{ flexDirection: 'row', flex: 1 }}>
-                                <View style={{ flex: 1 }}>
-                                    <Text style={{ color: 'black', fontWeight: '500', fontSize: 14, marginVertical: 5, marginHorizontal: 13 }}>{orderData[2] ? `order id : ${orderData[2].id.substring(0, 12)}` : ''}</Text>
-                                    <Text style={{ color: 'gray', fontSize: 12, marginVertical: 5, marginHorizontal: 12 }}>{orderData[2] ? `user : ${orderData[2].userId.fullName}` : ''}</Text>
-                                </View>
-                                <View style={{ flex: 1 }}>
-                                    <View style={{ alignSelf: 'flex-end' }}>
-                                        {/* <Text style={{ color: '#F4013D', fontWeight: '500', fontSize: 14, marginVertical: 5, marginHorizontal: 13 }}>COD now</Text>
-         */}
-                                        {/* <Text style={{}, [orderData[2].status ? { color: 'green', fontWeight: '500', fontSize: 14, marginVertical: 5, marginHorizontal: 13 } : { color: '#F4013D', fontWeight: '500', fontSize: 14, marginVertical: 5, marginHorizontal: 13 }]}>{orderData[2].status ? "Done" : 'COD Now'}</Text> */}
-                                    </View>
-                                    <View style={{ alignSelf: 'flex-end' }}>
-                                        <Text style={{ color: 'gray', fontSize: 12, marginVertical: 5, marginHorizontal: 12 }}>{orderData[2] ? `date : ${orderData[2].createdAt.substring(0, 10)}` : ''}</Text>
-                                    </View>
-                                </View>
-                            </View>
-                            <View style={[{
-                                width: '93.5%',
-                                height: 1,
-                                borderWidth: 0.6,
-                                backgroundColor: 'grey',
-                                opacity: 0.1,
-                                marginBottom: 35,
-                                alignSelf: 'center'
-                            }]}></View>
-                        </TouchableOpacity>
-                            :null}
-                                
-                                
+                        </FlatList>
 
-                            </View>
-
-                        ) : null}
+                        
+                        <View style={[{
+                                                width: '93.5%',
+                                                height: 1,
+                                                borderWidth: 0.6,
+                                                backgroundColor: 'grey',
+                                                opacity: 0.1,
+                                                marginBottom: 5,
+                                                alignSelf: 'center'
+                                            }]}></View>
+                        
 
 
                     </> : null}

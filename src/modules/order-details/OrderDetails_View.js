@@ -76,7 +76,7 @@ const OrderDetails_View = ({ navigation, route }) => {
             let total_price = 0;
 
             orderDetails.productId.forEach(el => {
-                total_price = parseInt(el.total_price) + total_price
+                total_price = parseFloat(el.total_price) + total_price
 
                 console.log('loop price', el.total_price)
             })
@@ -87,6 +87,7 @@ const OrderDetails_View = ({ navigation, route }) => {
     }, [orderDetails])
 
 
+    console.log('\n\ntotal price ->', total_price)
 
 
     const _load_Product_Details = async (orderarray) => {
@@ -187,6 +188,8 @@ const OrderDetails_View = ({ navigation, route }) => {
                         <Text style={{ color: 'black', fontWeight: '500', fontSize: 16, marginVertical: 5, marginHorizontal: 13 }}>Order ID: {orderDetails.id}</Text>
                         <Text style={{ color: 'gray', fontSize: 14, marginVertical: 5, marginHorizontal: 12 }}>{`User : ${orderDetails.userId.fullName}`}</Text>
                         <Text style={{ color: 'gray', fontSize: 14, marginVertical: 5, marginHorizontal: 12 }}>{`Phone : ${orderDetails.userId.phoneNumber}`}</Text>
+                        <Text style={{ color: 'gray', fontSize: 14, marginVertical: 5, marginHorizontal: 12 }}>{`COD Place : ${orderDetails.cod_location}`}</Text>
+                        <Text style={{ color: 'gray', fontSize: 14, marginVertical: 5, marginHorizontal: 12 }}>{`COD Time : ${orderDetails.cod_time}`}</Text>
 
                         <FlatList
 
