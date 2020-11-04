@@ -35,6 +35,8 @@ const Cart_View = () => {
     const [toggleCODTime_1, setToggleCODTime_1] = useState(false)
     const [toggleCODTime_2, setToggleCODTime_2] = useState(false)
 
+    const [total_price, setTotal_price] = useState(0)
+
     const _removeThisItem = () => {
         setCartData(prevData => {
 
@@ -57,55 +59,72 @@ const Cart_View = () => {
         })
     }
 
+    useEffect(()=>{
+
+        if(cartData){
+
+            let total_price_this = 0;
+
+            cartData.forEach(el=>{
+
+                total_price_this = parseInt(el.product_price)*parseInt(el.quantity)+ total_price_this
+
+            })
+
+            setTotal_price(total_price_this)
+        }
+
+    },[cartData])
+
     // console.log('\n\n cart order', cartData)
 
-    useEffect(()=>{
+    useEffect(() => {
 
-        if(toggleLocationDelivery_1){             
+        if (toggleLocationDelivery_1) {
             setToggleLocationDelivery_2(false)
             setToggleLocationDelivery_3(false)
         }
 
 
-    },[toggleLocationDelivery_1])
+    }, [toggleLocationDelivery_1])
 
-    useEffect(()=>{
+    useEffect(() => {
 
 
-        if(toggleLocationDelivery_2){ 
+        if (toggleLocationDelivery_2) {
             setToggleLocationDelivery_1(false)
             setToggleLocationDelivery_3(false)
         }
 
 
-    },[ toggleLocationDelivery_2])
+    }, [toggleLocationDelivery_2])
 
-    useEffect(()=>{
+    useEffect(() => {
 
-        if(toggleLocationDelivery_3){ 
+        if (toggleLocationDelivery_3) {
             setToggleLocationDelivery_1(false)
             setToggleLocationDelivery_2(false)
         }
 
-    },[ toggleLocationDelivery_3])
+    }, [toggleLocationDelivery_3])
 
-    useEffect(()=>{
+    useEffect(() => {
 
-        if(toggleCODTime_1){ 
+        if (toggleCODTime_1) {
             setToggleCODTime_2(false)
-            
+
         }
 
-    },[ toggleCODTime_1])
+    }, [toggleCODTime_1])
 
-    useEffect(()=>{
+    useEffect(() => {
 
-        if(toggleCODTime_2){ 
+        if (toggleCODTime_2) {
             setToggleCODTime_1(false)
-            
+
         }
 
-    },[ toggleCODTime_2])
+    }, [toggleCODTime_2])
 
     const __pressOrder = async () => {
 
@@ -163,6 +182,10 @@ const Cart_View = () => {
                     data={cartData}
 
                     renderItem={({ item, index }) => {
+
+                           
+
+
                         return (
 
                             <View style={{
@@ -208,6 +231,10 @@ const Cart_View = () => {
                                             </Text>
                                             <Text style={{ fontSize: 13, color: 'gray', marginLeft: 8, marginTop: 4 }}>
                                                 {item.product_description}
+                                            </Text>
+                                            <Text style={{ fontSize: 13, color: 'gray', marginLeft: 8, marginTop: 4 }}>
+                                                {parseInt(item.product_price) * parseInt(item.quantity)}
+
                                             </Text>
 
                                         </View>
@@ -285,7 +312,9 @@ const Cart_View = () => {
                     isChecked={toggleCODTime_2}
                     rightText={"Friday     5pm"}
                 />
-               
+
+                <Text style={{ marginLeft: 20, fontSize: 22, marginTop: 15, marginBottom: 15 }}>Total Price : {total_price}</Text>
+
                 {/* <View style={{width:'80%', alignSelf:'center', marginHorizontal:20, marginBottom:20, borderRadius:20}}> */}
                 <LinearGradient colors={['#FEC140', '#FC986E', '#FA709A']} style={styles.linearGradient_2}
                     start={{ x: 0.0, y: 0.25 }} end={{ x: 0.5, y: 1.0 }}
