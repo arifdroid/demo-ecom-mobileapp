@@ -37,23 +37,44 @@ const SignUp_View = ({ navigation }) => {
 
             console.log('create user ->', resp.data)
 
-            // if(resp){ 
+            // if (resp) {
             //     let config = {
             //         headers: {
             //             'Authorization': `Bearer ${resp.data.token}`
             //         }
             //     }
             //     let tenant = await Axios.get(`${URL}/api/tenant`, config);
-            //     setRefToken_context(resp.data.token)    
-            //     setCurrentTenant(tenant.data.rows[0].id)
-            //     setCurrentUser(resp.data.user)
+            //     // setRefToken_context(resp.data.token)    
+            //     // setCurrentTenant(tenant.data.rows[0].id)
+            //     // setCurrentUser(resp.data.user)
 
-            //     navigation.navigate('MainRoute')
+            //     // navigation.navigate('MainRoute')
+
+            //     if (tenant) {
+
+            //         let config = {
+            //             headers: {
+            //                 'Authorization': `Bearer ${resp.data.token}`
+            //             }
+            //         }
+
+            //         let data = {
+            //             id: resp.data.user.id,
+            //             "roles": ["admin", "custom me"]
+            //         }
+
+            //         let update_roles = await Axios.put(`${URL}/api/tenant/${tenant.data.rows[0].id}/user`, data, config);
+
+            //         if (update_roles) {
+            //             Alert.alert('please try login now')
+            //             navigation.pop()
+            //         }
+            //     }
 
             // }
 
             if (resp) {
-                Alert.alert('please wait admin verification')
+                Alert.alert('you may try login now')
                 navigation.pop()
             }
 

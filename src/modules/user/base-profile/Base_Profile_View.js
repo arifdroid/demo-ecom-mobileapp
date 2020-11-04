@@ -43,9 +43,9 @@ const Base_Profile_View = ({ navigation }) => {
 
     useEffect(() => {
 
-        if (currentUser.id == 'a8fae91b-a377-4806-8919-99b39e3a96ad' || currentUser.id == '4e616002-aa9d-416a-9de2-798409941953') {
+        // if (currentUser.id == 'a8fae91b-a377-4806-8919-99b39e3a96ad' || currentUser.id == '4e616002-aa9d-416a-9de2-798409941953') {
             _load_current_order();
-        }
+        // }
 
     }, [])
 
@@ -167,7 +167,9 @@ const Base_Profile_View = ({ navigation }) => {
     };
     return (
         <SafeAreaView style={{ flex: 1 }}>
-            <ScrollView style={{ flex: 1 }}>
+            <ScrollView style={{ flex: 1 }}
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}></RefreshControl>}
+            >
                 <Image source={image_logo_shop} resizeMode='contain' style={{ width: 135, alignSelf: 'center', height: 135, borderRadius: 10, marginTop: 25 }}></Image>
 
                 {currentUser.id == 'a8fae91b-a377-4806-8919-99b39e3a96ad' || currentUser.id == '4e616002-aa9d-416a-9de2-798409941953' ?
@@ -204,13 +206,15 @@ const Base_Profile_View = ({ navigation }) => {
                         <Text style={{ color: 'black', fontWeight: '500', fontSize: 20, marginVertical: 20, marginHorizontal: 13 }}>Orders</Text>
                         <FlatList
                             data={orderData.slice(0, 3)}
-                            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}></RefreshControl>}
+                            
                             renderItem={({ item }) => {
                                 
                                 return (
                                     <>
 
-                                        <TouchableOpacity onPress={() => _orderDetails(item.id)}>
+                                        <TouchableOpacity onPress={() => {
+                                            _orderDetails(item.id)
+                                            }}>
 
                                             <View style={[{
                                                 width: '93.5%',

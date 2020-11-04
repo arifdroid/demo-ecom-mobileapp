@@ -242,7 +242,7 @@ const Home_View = ({ navigation, route }) => {
                                 justifyContent: 'center',
                                 alignSelf: 'center',
                                 flex: 1,
-                                height: 295
+                                height: 325
                             }}>
                                 <CardView
                                     style={{ margin: 15, backgroundColor: 'white', flex: 1 }}

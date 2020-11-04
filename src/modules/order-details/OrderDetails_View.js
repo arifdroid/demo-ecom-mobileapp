@@ -134,34 +134,41 @@ const OrderDetails_View = ({ navigation, route }) => {
 
     const __orderDone = async () => {
 
-        
 
-        try {
+        if (currentUser.id == 'a8fae91b-a377-4806-8919-99b39e3a96ad' || currentUser.id == '4e616002-aa9d-416a-9de2-798409941953') {
 
-            let data = {
-                id: `${order_id_this}`,
-                data: {
-                    status: "true"
+
+
+            try {
+
+                let data = {
+                    id: `${order_id_this}`,
+                    data: {
+                        status: "true"
+                    }
                 }
+
+                let config = {
+                    headers: {
+                        'Authorization': `Bearer ${refToken_context}`,
+
+                    },
+
+                }
+
+
+                let update_order = await Axios.put(`${URL}/api/tenant/${currentTenant}/orders/${order_id_this}`, data, config);
+
+                if (update_order) navigation.pop();
+
+
+
+            } catch (error) {
+                Alert.alert('update COD status fail')
             }
-    
-            let config = {
-                headers: {
-                    'Authorization': `Bearer ${refToken_context}`,
-    
-                },
-    
-            }
 
-
-            let update_order = await Axios.put(`${URL}/api/tenant/${currentTenant}/orders/${order_id_this}`, data, config);
-
-            if(update_order) navigation.pop();
-
-            
-
-        } catch (error) {
-            Alert.alert('update COD status fail')
+        }else{
+            navigation.pop()
         }
 
 
@@ -232,7 +239,7 @@ const OrderDetails_View = ({ navigation, route }) => {
                                                 </View>
                                                 <View style={{ flex: 1 }}>
                                                     <View style={{ alignSelf: 'flex-end' }}>
-                                                 <Text style={{  },[orderDetails.status?{color:'green',fontWeight: '500', fontSize: 14, marginVertical: 5, marginHorizontal: 13 }:{color:'#F4013D',fontWeight: '500', fontSize: 14, marginVertical: 5, marginHorizontal: 13 }]}>{orderDetails.status? "Done": 'COD Now'}</Text>
+                                                        <Text style={{}, [orderDetails.status ? { color: 'green', fontWeight: '500', fontSize: 14, marginVertical: 5, marginHorizontal: 13 } : { color: '#F4013D', fontWeight: '500', fontSize: 14, marginVertical: 5, marginHorizontal: 13 }]}>{orderDetails.status ? "Done" : 'COD Now'}</Text>
                                                     </View>
                                                     <View style={{ alignSelf: 'flex-end' }}>
                                                         <Text style={{ color: 'gray', fontSize: 12, marginVertical: 5, marginHorizontal: 12 }}>{orderData[0] ? `date : ${orderData[0].createdAt.substring(0, 10)}` : ''}</Text>
