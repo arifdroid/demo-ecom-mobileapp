@@ -72,9 +72,9 @@ const Home_View = ({ navigation, route }) => {
         
       }, [refreshing]);
 
-    // console.log('\n\n====\n')
-    // console.log('data downloaded', data_downloaded)
-    // console.log('\n====\n\n')
+    console.log('\n\n====\n')
+    console.log('data downloaded', data_downloaded)
+    console.log('\n====\n\n')
 
     useEffect(() => {
         setCartData(null)
@@ -167,7 +167,9 @@ const Home_View = ({ navigation, route }) => {
                         let data_image = Buffer.from(image.data, 'binary').toString('base64')
                         // let data_image =  `data:image/png;base64,${Buffer.from(image.data, 'binary').toString('base64')}`
 
-                        data_image_with_image.push({id:el.id, product_name: el.name, product_description: el.description, product_color: el.color, product_price: el.price, product_category: el.categories, image: data_image })
+                        
+
+                        data_image_with_image.push({id:el.id, product_name: el.name, product_description: el.description, product_color: el.color, product_price: el.price, product_category: el.categories, image: data_image, quantity:el.quantity })
                         // setData_downloaded(data_image_with_image)
                         if(data_product.length == data_image_with_image.length){
                             setData_downloaded(data_image_with_image)
@@ -263,7 +265,7 @@ const Home_View = ({ navigation, route }) => {
                                             {item.product_name}
                                         </Text>
                                         <Text style={{ fontSize: 13, color: 'gray', marginLeft: 8, marginTop: 8 }}>
-                                            {item.product_description}
+                                            {item.product_description}          stock: {item.quantity}
                                         </Text>
 
                                         <View style={{ flexDirection: 'row', flex: 1, }}>

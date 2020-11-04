@@ -8,7 +8,7 @@ import { URL, URL_DEV_2, URL_google_bucket } from "@env"
 import Axios from 'axios';
 import { Alert } from 'react-native';
 import CheckBox from 'react-native-check-box';
-import { ScrollView } from 'react-native-gesture-handler';
+import { ScrollView, TextInput } from 'react-native-gesture-handler';
 
 
 
@@ -32,10 +32,15 @@ const Cart_View = () => {
     const [toggleLocationDelivery_2, setToggleLocationDelivery_2] = useState(false)
     const [toggleLocationDelivery_3, setToggleLocationDelivery_3] = useState(false)
 
+    const [locationCustom, setLocationCustom] = useState('')
+    const [codeTimeCustom, setCodeTimeCustom] = useState('')
+
     const [toggleCODTime_1, setToggleCODTime_1] = useState(false)
     const [toggleCODTime_2, setToggleCODTime_2] = useState(false)
 
     const [total_price, setTotal_price] = useState(0)
+
+
 
     const _removeThisItem = () => {
         setCartData(prevData => {
@@ -59,22 +64,22 @@ const Cart_View = () => {
         })
     }
 
-    useEffect(()=>{
+    useEffect(() => {
 
-        if(cartData){
+        if (cartData) {
 
             let total_price_this = 0;
 
-            cartData.forEach(el=>{
+            cartData.forEach(el => {
 
-                total_price_this = parseInt(el.product_price)*parseInt(el.quantity)+ total_price_this
+                total_price_this = parseFloat(el.product_price) * parseInt(el.quantity) + total_price_this
 
             })
 
             setTotal_price(total_price_this)
         }
 
-    },[cartData])
+    }, [cartData])
 
     // console.log('\n\n cart order', cartData)
 
@@ -139,6 +144,19 @@ const Cart_View = () => {
             }
         })
 
+        let cod_location_this = ''
+
+        let cod_time_this = ''
+        
+        if(toggleLocationDelivery_1) cod_location_this = 'Infront of hostel Delime'
+        else if(toggleLocationDelivery_2) cod_location_this = 'Infront of hostel Zamrud'
+        else if(toggleLocationDelivery_3) cod_location_this = 'At the cafe'
+        else if(locationCustom!='')cod_location_this = locationCustom
+
+        if(toggleCODTime_1) cod_time_this = 'This tuesday 5pm'
+        else if(toggleCODTime_2) cod_time_this = 'This friday 5pm'        
+        else if(codeTimeCustom!='')cod_time_this = codeTimeCustom
+
         let config = {
             headers: {
                 'Authorization': `Bearer ${refToken_context}`
@@ -146,7 +164,9 @@ const Cart_View = () => {
         }
 
         let data = {
-            "order_array": cart_array_to_order
+            "order_array": cart_array_to_order,
+            "cod_location":cod_location_this,
+            'cod_time':cod_time_this
         }
 
         console.log('cart_array_to_order data', data)
@@ -189,7 +209,7 @@ const Cart_View = () => {
 
                     renderItem={({ item, index }) => {
 
-                           
+
 
 
                         return (
@@ -239,7 +259,7 @@ const Cart_View = () => {
                                                 {item.product_description}
                                             </Text>
                                             <Text style={{ fontSize: 13, color: 'gray', marginLeft: 8, marginTop: 4 }}>
-                                                {parseInt(item.product_price) * parseInt(item.quantity)}
+                                                {parseFloat(item.product_price) * parseInt(item.quantity)}
 
                                             </Text>
 
@@ -273,7 +293,7 @@ const Cart_View = () => {
                     uncheckedCheckBoxColor={'gray'}
                     checkedCheckBoxColor={'red'}
                     isChecked={toggleLocationDelivery_1}
-                    rightText={"In front of hostel delima"}
+                    rightText={"Infront of hostel delima"}
                 />
                 <CheckBox
                     style={{ width: 230, marginLeft: 20, marginTop: 5, marginBottom: 10 }}
@@ -283,10 +303,10 @@ const Cart_View = () => {
                     uncheckedCheckBoxColor={'gray'}
                     checkedCheckBoxColor={'red'}
                     isChecked={toggleLocationDelivery_2}
-                    rightText={"In front of hostel zamrud"}
+                    rightText={"Infront of hostel zamrud"}
                 />
                 <CheckBox
-                    style={{ width: 230, marginLeft: 20, marginTop: 5, marginBottom: 30 }}
+                    style={{ width: 230, marginLeft: 20, marginTop: 5, marginBottom: 10 }}
                     onClick={() => {
                         setToggleLocationDelivery_3(!toggleLocationDelivery_3)
                     }}
@@ -295,6 +315,11 @@ const Cart_View = () => {
                     isChecked={toggleLocationDelivery_3}
                     rightText={"At the cafe"}
                 />
+
+                <View style={{ flex: 4, width: '80%', marginLeft: 20, marginBottom: 30 }}>
+                    <TextInput style={{ width: '100%', color: 'black' }} placeholder={'cod location'} onChangeText={el => setLocationCustom(el)}></TextInput>
+                    <View style={{ borderWidth: 0.4, borderColor: 'gray', width: '98%', marginTop: 10 }}></View>
+                </View>
 
                 <Text style={{ marginLeft: 20, fontSize: 16, marginTop: 15, marginBottom: 15 }}>Select Preferred COD Time</Text>
 
@@ -306,18 +331,23 @@ const Cart_View = () => {
                     uncheckedCheckBoxColor={'gray'}
                     checkedCheckBoxColor={'red'}
                     isChecked={toggleCODTime_1}
-                    rightText={"Tuesday  5pm"}
+                    rightText={"This tuesday 5pm"}
                 />
                 <CheckBox
-                    style={{ width: 230, marginLeft: 20, marginTop: 5, marginBottom: 40 }}
+                    style={{ width: 230, marginLeft: 20, marginTop: 5, marginBottom: 10 }}
                     onClick={() => {
                         setToggleCODTime_2(!toggleCODTime_2)
                     }}
                     uncheckedCheckBoxColor={'gray'}
                     checkedCheckBoxColor={'red'}
                     isChecked={toggleCODTime_2}
-                    rightText={"Friday     5pm"}
+                    rightText={"This friday 5pm"}
                 />
+
+                <View style={{ flex: 4, width: '80%', marginLeft: 20, marginBottom: 40 }}>
+                    <TextInput style={{ width: '100%', color: 'black' }} placeholder={'cod time and date'} onChangeText={el => setCodeTimeCustom(el)}></TextInput>
+                    <View style={{ borderWidth: 0.4, borderColor: 'gray', width: '98%', marginTop: 10 }}></View>
+                </View>
 
                 <Text style={{ marginLeft: 20, fontSize: 22, marginTop: 15, marginBottom: 15 }}>Total Price : {total_price}</Text>
 
