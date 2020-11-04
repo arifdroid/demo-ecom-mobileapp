@@ -6,6 +6,7 @@ import CardView from 'react-native-cardview'
 import { UserData_Context } from '../../context-provider/UserContext';
 import Axios from 'axios';
 import { URL, URL_DEV_2 } from "@env"
+import { Alert } from 'react-native';
 global.Buffer = global.Buffer || require('buffer').Buffer
 
 
