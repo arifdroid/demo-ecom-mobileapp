@@ -136,9 +136,9 @@ const Base_Profile_View = ({ navigation }) => {
                     </View>
 
                     <View style={{ flex: 2.4 }}>
-                        <Text style={{ color: 'gray', fontWeight: '500', fontSize: 13, marginVertical: 10 }} >{currentUser.id == '32be4d51-8358-4fe7-87f9-ac13d57f396e' ? 'K-Mart Shop':currentUser.fullName}</Text>
-                        <Text style={{ color: 'gray', fontWeight: '500', fontSize: 13, marginVertical: 10 }} >{currentUser.id == '32be4d51-8358-4fe7-87f9-ac13d57f396e' ? 'kmartshop_admin@yopmail.com':currentUser.email}</Text>
-                        <Text style={{ color: 'gray', fontWeight: '500', fontSize: 13, marginVertical: 10 }} >{currentUser.id == '32be4d51-8358-4fe7-87f9-ac13d57f396e' ? '0132538359':currentUser.phoneNumber}</Text>
+                        <Text style={{ color: 'gray', fontWeight: '500', fontSize: 13, marginVertical: 10 }} >{currentUser.fullName}</Text>
+                        <Text style={{ color: 'gray', fontWeight: '500', fontSize: 13, marginVertical: 10 }} >{currentUser.email}</Text>
+                        <Text style={{ color: 'gray', fontWeight: '500', fontSize: 13, marginVertical: 10 }} >{currentUser.phoneNumber}</Text>
 
                     </View>
 
@@ -173,7 +173,8 @@ const Base_Profile_View = ({ navigation }) => {
                                 </View>
                                 <View style={{ flex: 1 }}>
                                     <View style={{ alignSelf: 'flex-end' }}>
-                                        <Text style={{ color: '#F4013D', fontWeight: '500', fontSize: 14, marginVertical: 5, marginHorizontal: 13 }}>COD now</Text>
+                                        {/* <Text style={{ color: '#F4013D', fontWeight: '500', fontSize: 14, marginVertical: 5, marginHorizontal: 13 }}>COD now</Text> */}
+                                        <Text style={{  },[orderData[0].status?{color:'green',fontWeight: '500', fontSize: 14, marginVertical: 5, marginHorizontal: 13 }:{color:'#F4013D',fontWeight: '500', fontSize: 14, marginVertical: 5, marginHorizontal: 13 }]}>{orderData[0].status? "Done": 'COD Now'}</Text>
                                     </View>
                                     <View style={{ alignSelf: 'flex-end' }}>
                                         <Text style={{ color: 'gray', fontSize: 12, marginVertical: 5, marginHorizontal: 12 }}>{orderData[0] ? `date : ${orderData[0].createdAt.substring(0, 10)}` : ''}</Text>
@@ -200,7 +201,8 @@ const Base_Profile_View = ({ navigation }) => {
                                 </View>
                                 <View style={{ flex: 1 }}>
                                     <View style={{ alignSelf: 'flex-end' }}>
-                                        <Text style={{ color: '#F4013D', fontWeight: '500', fontSize: 14, marginVertical: 5, marginHorizontal: 13 }}>COD now</Text>
+                                    {/* <Text style={{ color: '#F4013D', fontWeight: '500', fontSize: 14, marginVertical: 5, marginHorizontal: 13 }}>{orderData[1].status}</Text> */}
+                                    <Text style={{  },[orderData[1].status?{color:'green',fontWeight: '500', fontSize: 14, marginVertical: 5, marginHorizontal: 13 }:{color:'#F4013D',fontWeight: '500', fontSize: 14, marginVertical: 5, marginHorizontal: 13 }]}>{orderData[1].status? "Done": 'COD Now'}</Text>
                                     </View>
                                     <View style={{ alignSelf: 'flex-end' }}>
                                         <Text style={{ color: 'gray', fontSize: 12, marginVertical: 5, marginHorizontal: 12 }}>{orderData[1] ? `date : ${orderData[1].createdAt.substring(0, 10)}` : ''}</Text>
@@ -228,7 +230,9 @@ const Base_Profile_View = ({ navigation }) => {
                                 </View>
                                 <View style={{ flex: 1 }}>
                                     <View style={{ alignSelf: 'flex-end' }}>
-                                        <Text style={{ color: '#F4013D', fontWeight: '500', fontSize: 14, marginVertical: 5, marginHorizontal: 13 }}>COD now</Text>
+                                        {/* <Text style={{ color: '#F4013D', fontWeight: '500', fontSize: 14, marginVertical: 5, marginHorizontal: 13 }}>COD now</Text>
+                                         */}
+                                         <Text style={{  },[orderData[2].status?{color:'green',fontWeight: '500', fontSize: 14, marginVertical: 5, marginHorizontal: 13 }:{color:'#F4013D',fontWeight: '500', fontSize: 14, marginVertical: 5, marginHorizontal: 13 }]}>{orderData[2].status? "Done": 'COD Now'}</Text>
                                     </View>
                                     <View style={{ alignSelf: 'flex-end' }}>
                                         <Text style={{ color: 'gray', fontSize: 12, marginVertical: 5, marginHorizontal: 12 }}>{orderData[2] ? `date : ${orderData[2].createdAt.substring(0, 10)}` : ''}</Text>

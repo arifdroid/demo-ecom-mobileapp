@@ -158,6 +158,12 @@ const Cart_View = () => {
             if (resp_create_order) {
                 Alert.alert('order success')
                 setCartData(null)
+                setTotal_price(0)
+                setToggleCODTime_1(false)
+                setToggleCODTime_2(false)
+                setToggleLocationDelivery_1(false)
+                setToggleLocationDelivery_2(false)
+                setToggleLocationDelivery_3(false)
             }
 
         } catch (error) {
